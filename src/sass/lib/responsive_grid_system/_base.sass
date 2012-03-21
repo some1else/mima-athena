@@ -1,0 +1,217 @@
+// Responsive Grid System
+// CC-BY http://some1else.github.com
+
+////// Util //////
+
+// Used to abbreviate public API's handling of *splats
+=multi_extend($selector, $context: all, $c2: unset, $c3: unset, $c4: unset)
+  @if $context == all
+    @extend .#{$selector}
+  @else
+    @extend .#{$context}_#{$selector}
+    @each $other_context in $c2, $c3, $c4
+      @if $other_context != unset
+        @extend .#{$other_context}_#{$selector}
+
+////// Containers //////
+
+// Generates container style for $context
+=generate_container($context, $width, $gutter)
+  .#{$context}_container, .container
+    @extend .cleared
+    width: $width - $gutter
+    padding: $gutter/2
+    margin: 0 auto
+
+////// Positioning //////
+
+// All grid columns are positioned
+.positioned
+  float: left
+  display: -moz-inline-box
+  -moz-box-orient: vertical
+  display: inline-block
+  vertical-align: middle
+  *vertical-aign: auto
+  *display: inline
+
+// Makes all grid columns and rows floated
+=positioned()
+  @extend .positioned
+
+////// Gutters //////
+
+// Generates gutter style for $context
+=generate_gutter($context, $gutter)
+  .gutter, .#{$context}_gutter
+    margin:
+      left: $gutter/2
+      right: $gutter/2
+
+// Makes grid columns guttered
+=guttered($context)
+  @extend .#{$context}_gutter
+
+////// Grid //////
+
+// Row width mixin for $context
+=row_width($n, $width, $columns, $gutter)
+  @if unit($width) == "%"
+    $width: 100%
+  $row: ($width / $columns)
+  width: ($row * $n)
+
+// Column width mixin
+=column_width($n, $width, $columns, $gutter)
+  @if unit($width) == "%"
+    $width: 100%
+  $column: ($width / $columns) - $gutter
+  width: ($column * $n) + ($gutter * ($n - 1))
+
+// Change this to suit your 'reset'
+// 2 * 4px padding + 2 * 1px border
+$input_padding: 10 !default
+
+// Input width dimensions take padding into account
+=input_width($n, $width, $columns, $gutter)
+  $column: ($width / $columns) - $gutter
+  width: ($column * $n) + ($gutter * ($n - 1)) - $input_padding
+
+@function width($n, $column, $gutter)
+  @return ($n * $column) + ($gutter * $n)
+
+=offset($n, $width, $columns, $gutter, $appendix: 0)
+  $column: ($width/ $columns) - $gutter
+  margin-left: $n * $column + $gutter * $n + $appendix
+
+////// Hidden Elements //////
+
+.hidden
+  display: none
+
+// Generates hidden style for $context
+=generate_hider($context)
+  .#{$context}_hidden
+    display: none
+
+////// Clear fix //////
+
+.cleared
+  *zoom: 1
+  &:before, &:after
+    display: table
+    content: ""
+  &:after
+    clear: both
+
+=cleared()
+  @extend .cleared
+
+////// Grid //////
+
+// Generates container, gutter, column and row styles for $context
+=generate_grid($context, $width, $columns, $gutter)
+  $width: $width - $gutter
+  $column: ($width / $columns) - $gutter
+
+  @for $n from 1 through $columns
+    
+    // Default row and row in context
+    // Contexts are specified second so overrides work
+    .row_#{$n}, .#{$context}_row_#{$n}
+      +positioned
+      +row_width($n, $width, $columns, $gutter)
+
+    // General "width" styles, useful if you don't want to
+    // extend +positioned and +guttered
+    .width_#{$n}, .#{$context}_width_#{$n}
+      +column_width($n, $width, $columns, $gutter)
+
+    // Column styles
+    .col_#{$n}, .#{$context}_col_#{$n}
+      +positioned
+      +guttered($context)
+      @extend .#{$context}_width_#{$n}
+
+    // Input styles
+    .input_#{$n}, .#{$context}_input_#{$n}
+      +positioned
+      +guttered($context)
+      +input_width($n, $width, $columns, $gutter)
+      //width: ($n / $columns) * $width - $gutter - 10
+    
+    // Push styles implemented in two ways because
+    // columns have margins and rows do not
+
+    // Pushes rows $n grid columns to the right
+    .push_row_#{$n}, .#{$context}_push_row_#{$n}
+      //+offset($n, $width, $columns, $gutter)
+      margin-left: width($n, $column, $gutter)
+    // Pushes columns $n grid columns to the right
+    .push_col_#{$n}, .#{$context}_push_col_#{$n}
+      //+offset($n, $width, $columns, $gutter, $gutter * .5)
+      margin-left: width($n, $column, $gutter) + $gutter/2
+
+////// FUTURE //////
+
+// Following code handles the list of contexts and their @media queries
+// PROBLEM: Impossible to evaluate stuff next to @media in SASS, yet.
+// In the meanwhile, another preprocessor can be used for handling queries
+// This enables simple exceptions with @media anywhere in the selector hierarchy
+
+$contexts: all
+$queries: all
+
+// Defining a new media query for a context 
+// Usage: +new_media(handheld, '(max-width: 640px)')
+=new_media($context: all, $query: 'all')
+  $contexts: append($contexts, $context)
+  $queries: append($queries, $query)
+
+// Returns the proper query
+// Usage: @media query(handheld)
+@function query($context)
+  $index: index($contexts, $context)
+  @return nth($queries, $index)
+
+////// PUBLIC API //////
+
+// Grid definition that follows @media query
+=uses_grid($context: all, $width: 960px, $columns: 12, $gutter: 20px)
+  +generate_container($context, $width, $gutter)
+  +generate_gutter($context, $gutter)
+  +generate_grid($context, $width, $columns, $gutter)
+  +generate_hider($context)
+
+
+// Makes element a container in $context
+=container($context: all, $c2: unset, $c3: unset, $c4: unset)
+  +multi_extend(container, $context, $c2, $c3, $c4)
+
+// Makes element a row in $context
+=row($size: 12, $context: all, $c2: unset, $c3: unset, $c4: unset)
+  $selector: row_#{$size}
+  +multi_extend($selector, $context, $c2, $c3, $c4)
+
+// Makes element a column in $context
+=col($size: 12, $context: all, $c2: unset, $c3: unset, $c4: unset)
+  $selector: col_#{$size}
+  +multi_extend($selector, $context, $c2, $c3, $c4)
+
+// Inputs usually have padding and borders. To take this into account, set the 
+=input($size: 12, $context: all, $c2: unset, $c3: unset, $c4: unset)
+  $selector: input_#{$size}
+  +multi_extend($selector, $context, $c2, $c3, $c4)
+
+=push_row($size: 12, $context: all, $c2: unset, $c3: unset, $c4: unset)
+  $selector: push_row_#{$size}
+  +multi_extend($selector, $context, $c2, $c3, $c4)
+
+=push_col($size: 12, $context: all, $c2: unset, $c3: unset, $c4: unset)
+  $selector: push_col_#{$size}
+  +multi_extend($selector, $context, $c2, $c3, $c4)
+    
+// Hides an element in $context
+=hide($context: all, $c2: unset, $c3: unset, $c4: unset)
+  $selector: hidden
+  +multi_extend($selector, $context, $c2, $c3, $c4)

@@ -1,0 +1,25 @@
+#views-navbar
+  +row(24)
+
+  .navbar-inner
+    overflow: hidden
+    padding: 0
+  h1
+    +col(6)
+    +col(24, tablet, handheld)
+    a.brand
+      margin-left: 0
+      padding:
+        top: 10px
+        bottom: 10px
+        left: 40px
+        right: 0
+      background:
+        image: url(/img/mm_logo_120227.png)
+        repeat: no-repeat
+        size: 30px
+        position: left
+  ul.nav
+    +col(16)
+    +hide(tablet, handheld)
+    +cleared

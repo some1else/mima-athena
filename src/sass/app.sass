@@ -1,0 +1,62 @@
+@import lib/responsive_grid_system/base
+
+@media (max-width: 639px)
+  +uses_grid(handheld, 100%, 24, 5%)
+
+@media (min-width: 640px) and (max-width: 979px)
+  +uses_grid(tablet, 620px, 24, 20px)
+
+@media (min-width: 980px) and (max-width: 1199px)
+  +uses_grid(screen, 780px, 24, 30px)
+
+@media (min-width: 1200px)
+  +uses_grid(huge, 960px, 24, 40px)
+
+$person_color: #CBCB00
+$place_color: #FE6633
+$time_color: #FE3C6E
+$tag_color: #29ABE2
+$knot_color: #333
+
+@import landing
+@import agenda
+@import nav
+
+
+body
+  background: #DDD
+ 
+#app
+  +container
+
+// #loginForm
+//   +row(12)
+//   +push_row(6)
+//   form
+//     +col(12)
+//     background: #36C
+//     padding: 20px 0 10px 0
+//     border-radius: 5px
+//     input
+//       height: 28px
+//   .nav
+//     display: none
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

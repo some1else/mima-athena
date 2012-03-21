@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <title>Awesomebar</title>
+    <meta charset='utf8' />
+    <script src='js/lib/jquery-1.7.1.js'></script>
+    <script src='js/lib/jquery.md5.js'></script>
+    <script src='js/lib/json2.js'></script>
+    <script src='js/lib/underscore.js'></script>
+    <script src='js/lib/backbone.js'></script>
+    <script src='js/sync.js'></script>
+    <script src='js/session.js'></script>
+    <script src='js/concepts.js'></script>
+    <script src='js/entries.js'></script>
+    <script src='js/login.js'></script>
+    <script src='js/awsmbar.js'></script>
+    <script src='js/meanxy.js'></script>
+    <link href='css/lib/bootstrap.css' rel='stylesheet' />
+    <link href='css/awsmbar.css' rel='stylesheet' />
+  </head>
+  <body>
+    <script type='text/javascript'>
+      //<![CDATA[
+        $(function() {
+            if (!window.MM.session) {
+                window.MM.session = new MM.Session()
+            }
+            var login = new MM.Login({login: 's1e', password: 'admin123'})
+        
+            var $loginForm = $('#loginForm').first()
+            var loginForm = new MM.Views.LoginSignupForm({el: $loginForm, model: login})
+        
+            var entry = new MM.Entry({fuzz: ''})
+            $awesomeBar = $('#awesomeBar')
+            window.awsmBar = new MM.AwsmBar.Views.Edit({model: entry, el: $awesomeBar})
+        
+            //var related = new MM.MeanXY.TileCollection()
+            var entries = new MM.Entries()
+            entries.fetch()
+        
+            console.log('$document.ready', 'EOF')
+            
+            MM.session.on('change:token', function(){
+                //console.log("SNIP")
+                $loginForm.hide()
+            })
+        })
+      //]]>
+    </script>
+    <div id='app'>
+      <nav class='navbar'>
+        <div class='navbar-inner'>
+          <ul class='nav'>
+            <li>
+              <a href='agenda'>Agenda</a>
+            </li>
+            <li>
+              <a href='meanxy'>MeanXY</a>
+            </li>
+            <li>
+              <a href='logout'>Log out</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <section id='loginForm'></section>
+      <section id='stage'>
+        <div id='awesomeBar'></div>
+        <div id='entries'></div>
+      </section>
+      <aside id='aux'>
+        <section id='aims'></section>
+        <section id='contacts'></section>
+      </aside>
+    </div>
+  </body>
+</html>

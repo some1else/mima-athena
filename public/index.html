@@ -1,0 +1,113 @@
+<html>
+  <head>
+    <title>middlemachine (phoenix)</title>
+    <meta charset='utf8' />
+    <script src='js/lib/LAB.js'></script>
+    <script type='text/javascript'>
+      //<![CDATA[
+        window.MM = {}
+        MM.Views = {}
+      //]]>
+    </script>
+    <script src='js/lib/jquery-1.7.1.js'></script>
+    <script src='js/lib/jquery-jsonp-2.2.1.min'></script>
+    <script src='js/lib/jquery.md5.js'></script>
+    <script src='js/lib/jquery.cookie.js'></script>
+    <script src='js/lib/json2.js'></script>
+    <script src='js/lib/underscore.js'></script>
+    <script src='js/lib/backbone.js'></script>
+    <script src='js/models/syncs.js'></script>
+    <script src='js/models/session.js'></script>
+    <script src='js/models/concepts.js'></script>
+    <script src='js/models/workflows.js'></script>
+    <script src='js/models/entries.js'></script>
+    <script src='js/views/login.js'></script>
+    <script src='js/views/entries.js'></script>
+    <script src='js/views/awsmbar.js'></script>
+    <script src='js/views/nav.js'></script>
+    <script src='js/views/landing.js'></script>
+    <script src='js/views/agenda.js'></script>
+    <script src='js/views/meanxy.js'></script>
+    <script src='js/app.js'></script>
+    <script src='js/lib/bootstrap-dropdown.js'></script>
+    <script type='text/javascript'>
+      //<![CDATA[
+        $(function() {
+            MM.app = new MM.App()
+            Backbone.history.start({pushState: true})            
+        })
+      //]]>
+    </script>
+    <link href='css/lib/bootstrap.css' rel='stylesheet' />
+    <link href='css/app.css' rel='stylesheet' />
+  </head>
+  <body>
+    <div id='app'>
+      <nav class='navbar' id='views-navbar'>
+        <div class='navbar-inner'>
+          <h1>
+            <a class='brand' href='/'>middlemachine</a>
+          </h1>
+          <ul class='nav'>
+            <li>
+              <a href='agenda'>Agenda</a>
+            </li>
+            <li>
+              <a href='meanxy'>MeanXY</a>
+            </li>
+            <li>
+              <a href='logout'>Log out</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <section id='stage'></section>
+      <aside id='bar'></aside>
+    </div>
+    <script type='text/javascript'>
+      //<![CDATA[
+        if (false) {
+            $LAB
+            .script("js/lib/jquery-1.7.1.js")
+            .wait()
+            .script("js/lib/jquery-jsonp-2.2.1.min")
+            .script("js/lib/jquery.md5.js")
+            .script("js/lib/jquery.cookie.js")
+        
+            .script("js/lib/json2.js")
+            .script("js/lib/underscore.js")
+            .wait()
+            .script("js/lib/backbone.js")
+            .wait(function() {
+                window.MM = {}
+                window.MM.Views = {}
+            })
+            .script("js/sync.js")
+            .script("js/session.js")
+            .wait()
+            .script("js/concepts.js")
+            .script("js/entries.js")
+            .wait()
+            .script("js/login.js")
+            .script("js/nav.js")
+            .script("js/awsmbar.js")
+            .wait()
+            .script("js/landing.js")
+            .script("js/agenda.js")
+            .script("js/meanxy.js")
+            .wait()
+            .script("js/app.js")
+        
+            .wait(function(){
+                console.log(document, 'EOF')
+                $(function() {
+                    MM.app = new MM.App()
+                    Backbone.history.start({pushState: true})
+                })
+                // MM.app.goHome()
+            })
+        }
+      //]]>
+    </script>
+  </body>
+</html>

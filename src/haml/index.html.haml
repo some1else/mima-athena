@@ -1,0 +1,119 @@
+%html
+    %head
+        %title middlemachine (phoenix)
+
+        %meta{:charset => 'utf8'}
+
+        %script{:src => 'js/lib/LAB.js'}
+
+        :javascript
+            window.MM = {}
+            MM.Views = {}
+        
+        %script{:src => "js/lib/jquery-1.7.1.js"}
+        %script{:src => "js/lib/jquery-jsonp-2.2.1.min"}
+        %script{:src => "js/lib/jquery.md5.js"}
+        %script{:src => "js/lib/jquery.cookie.js"}
+
+        %script{:src => "js/lib/json2.js"}
+        %script{:src => "js/lib/underscore.js"}
+        %script{:src => "js/lib/backbone.js"}
+
+        %script{:src => "js/models/syncs.js"}
+        %script{:src => "js/models/session.js"}
+
+        %script{:src => "js/models/concepts.js"}
+        %script{:src => "js/models/workflows.js"}
+        %script{:src => "js/models/entries.js"}
+
+        %script{:src => "js/views/login.js"}
+        %script{:src => "js/views/entries.js"}
+        %script{:src => "js/views/awsmbar.js"}
+        %script{:src => "js/views/nav.js"}
+
+        %script{:src => "js/views/landing.js"}
+        %script{:src => "js/views/agenda.js"}
+        %script{:src => "js/views/meanxy.js"}
+
+        %script{:src => "js/app.js"}
+
+        %script{:src => "js/lib/bootstrap-dropdown.js"}
+
+
+        :javascript
+            $(function() {
+                MM.app = new MM.App()
+                Backbone.history.start({pushState: true})            
+            })
+
+
+
+        %link{:rel => 'stylesheet', :href => 'css/lib/bootstrap.css'}
+        %link{:rel => 'stylesheet', :href => 'css/app.css'}
+    %body
+        #app
+            %nav#views-navbar.navbar
+                .navbar-inner
+                    %h1
+                        %a.brand{:href => '/'} middlemachine
+                    %ul.nav
+                        %li
+                            %a{:href => 'agenda'} Agenda
+                        %li
+                            %a{:href => 'meanxy'} MeanXY
+                        %li
+                            %a{:href => 'logout'} Log out
+
+            %section#stage
+            %aside#bar
+
+        :javascript
+            if (false) {
+                $LAB
+                .script("js/lib/jquery-1.7.1.js")
+                .wait()
+                .script("js/lib/jquery-jsonp-2.2.1.min")
+                .script("js/lib/jquery.md5.js")
+                .script("js/lib/jquery.cookie.js")
+
+                .script("js/lib/json2.js")
+                .script("js/lib/underscore.js")
+                .wait()
+                .script("js/lib/backbone.js")
+                .wait(function() {
+                    window.MM = {}
+                    window.MM.Views = {}
+                })
+                .script("js/sync.js")
+                .script("js/session.js")
+                .wait()
+                .script("js/concepts.js")
+                .script("js/entries.js")
+                .wait()
+                .script("js/login.js")
+                .script("js/nav.js")
+                .script("js/awsmbar.js")
+                .wait()
+                .script("js/landing.js")
+                .script("js/agenda.js")
+                .script("js/meanxy.js")
+                .wait()
+                .script("js/app.js")
+
+                .wait(function(){
+                    console.log(document, 'EOF')
+                    $(function() {
+                        MM.app = new MM.App()
+                        Backbone.history.start({pushState: true})
+                    })
+                    // MM.app.goHome()
+                })
+            }
+
+
+
+
+
+
+
+

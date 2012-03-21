@@ -1,0 +1,95 @@
+!!!
+%html
+
+  %head
+    %title middlemachine
+    %script{:src => 'js/lib/json2.js'}    
+    %script{:src => 'js/lib/jquery-1.7.1.js'}
+    %script{:src => 'js/lib/jquery.md5.js'}
+    %script{:src => 'js/lib/underscore.js'}
+    %script{:src => 'js/lib/backbone.js'}
+    %script{:src => 'js/login.js'}
+    %link{:rel => "stylesheet", :media => "screen", :href => "css/lib/bootstrap.css"}
+    %link{:rel => "stylesheet", :media => "screen", :href => "css/landing.css"}
+    :javascript
+      $(function() {
+        var session = new MM.Login()
+
+        var $topForm = $('#top_form').first()
+        var topForm = new MM.LoginSignupView({el: $topForm, model: session})
+        // topForm.render()
+        
+        var $bottomForm = $('#bottom_form').first()
+        var bottomForm = new MM.LoginSignupView({el: $bottomForm, model: session})
+        // bottomForm.render()
+      })          
+  %body#landing
+    %header
+      #logo
+        .symbol
+          %img{:src => "images/mm_logo_120227.png"}
+        .type
+          %h1
+            middlemachine
+          %h2
+            %small a smart, context-aware thought engine
+    
+    %section#top_form
+      &nbsp;
+    
+    %section#traits
+      %ul
+        %li
+          .image
+            %img{:src => "http://lorempixel.com/320/160/technics", :alt => "smart"}
+          .copy
+            %h2
+              %span Smart
+            %p
+              Lorem ipsum dolor sit met, consectetur adipiscing elit. Integer vestibule, lingual eget element hendrerit.
+            
+        %li
+          .image
+            %img{:src => "http://lorempixel.com/320/160/transport", :alt => "linked"}
+          .copy
+            %h2
+              %span Linked
+            %p
+              Morbi satis farer lorem, at mollis maoris laureate non. Meanness foci's nils eu tellus rhoncus laborites.
+        %li
+          .image
+            %img{:src => "http://lorempixel.com/320/160/fashion", :alt => "social"}
+          .copy
+            %h2
+              %span Social
+            %p
+              Quick pretium vestibule feugiat. Vestibules intercom leo turps. Aliquot leo urna, faceless eget acumen.
+        %li
+          .image
+            %img{:src => "http://lorempixel.com/320/160/city", :alt => "context-aware"}
+          .copy
+            %h2
+              %span Context-aware
+            %p
+              Curabitur aaugurugue felis, iceless eu bibendum sit met, malesuada et libero. Done purrs augur.
+    
+    %section#teaser
+      %p.upcoming
+        See more about what we're trying to do
+
+    %section#bottom_form
+      &nbsp;
+        
+    %footer
+      %nav
+        %a{:href => "#"} About
+        |
+        %a{:href => "#"} Legal
+        |
+        %a{:href => "#"} Jobs
+        |
+        %a{:href => "#"} Twitter
+        &amp;
+        %a{:href => "#"} Facebook
+        |
+        %a{:href => "#"} CHT

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>middlemachine</title>
+    <script src='js/lib/json2.js'></script>
+    <script src='js/lib/jquery-1.7.1.js'></script>
+    <script src='js/lib/jquery.md5.js'></script>
+    <script src='js/lib/underscore.js'></script>
+    <script src='js/lib/backbone.js'></script>
+    <script src='js/login.js'></script>
+    <link href='css/lib/bootstrap.css' media='screen' rel='stylesheet' />
+    <link href='css/landing.css' media='screen' rel='stylesheet' />
+    <script type='text/javascript'>
+      //<![CDATA[
+        $(function() {
+          var session = new MM.Login()
+        
+          var $topForm = $('#top_form').first()
+          var topForm = new MM.LoginSignupView({el: $topForm, model: session})
+          // topForm.render()
+          
+          var $bottomForm = $('#bottom_form').first()
+          var bottomForm = new MM.LoginSignupView({el: $bottomForm, model: session})
+          // bottomForm.render()
+        })
+      //]]>
+    </script>
+  </head>
+  <body id='landing'>
+    <header>
+      <div id='logo'>
+        <div class='symbol'>
+          <img src='images/mm_logo_120227.png' />
+        </div>
+        <div class='type'>
+          <h1>
+            middlemachine
+          </h1>
+          <h2>
+            <small>a smart, context-aware thought engine</small>
+          </h2>
+        </div>
+      </div>
+    </header>
+    <section id='top_form'>
+      &nbsp;
+    </section>
+    <section id='traits'>
+      <ul>
+        <li>
+          <div class='image'>
+            <img alt='smart' src='http://lorempixel.com/320/160/technics' />
+          </div>
+          <div class='copy'>
+            <h2>
+              <span>Smart</span>
+            </h2>
+            <p>
+              Lorem ipsum dolor sit met, consectetur adipiscing elit. Integer vestibule, lingual eget element hendrerit.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class='image'>
+            <img alt='linked' src='http://lorempixel.com/320/160/transport' />
+          </div>
+          <div class='copy'>
+            <h2>
+              <span>Linked</span>
+            </h2>
+            <p>
+              Morbi satis farer lorem, at mollis maoris laureate non. Meanness foci's nils eu tellus rhoncus laborites.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class='image'>
+            <img alt='social' src='http://lorempixel.com/320/160/fashion' />
+          </div>
+          <div class='copy'>
+            <h2>
+              <span>Social</span>
+            </h2>
+            <p>
+              Quick pretium vestibule feugiat. Vestibules intercom leo turps. Aliquot leo urna, faceless eget acumen.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class='image'>
+            <img alt='context-aware' src='http://lorempixel.com/320/160/city' />
+          </div>
+          <div class='copy'>
+            <h2>
+              <span>Context-aware</span>
+            </h2>
+            <p>
+              Curabitur aaugurugue felis, iceless eu bibendum sit met, malesuada et libero. Done purrs augur.
+            </p>
+          </div>
+        </li>
+      </ul>
+    </section>
+    <section id='teaser'>
+      <p class='upcoming'>
+        See more about what we're trying to do
+      </p>
+    </section>
+    <section id='bottom_form'>
+      &nbsp;
+    </section>
+    <footer>
+      <nav>
+        <a href='#'>About</a>
+        |
+        <a href='#'>Legal</a>
+        |
+        <a href='#'>Jobs</a>
+        |
+        <a href='#'>Twitter</a>
+        &amp;
+        <a href='#'>Facebook</a>
+        |
+        <a href='#'>CHT</a>
+      </nav>
+    </footer>
+  </body>
+</html>

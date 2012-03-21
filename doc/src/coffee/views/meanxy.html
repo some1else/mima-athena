@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>meanxy.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="../models/concepts.html">concepts.coffee</a>
+          <a class="source" href="../models/entries.html">entries.coffee</a>
+          <a class="source" href="../models/session.html">session.coffee</a>
+          <a class="source" href="../models/syncs.html">syncs.coffee</a>
+          <a class="source" href="../models/workflows.html">workflows.coffee</a>
+          <a class="source" href="agenda.html">agenda.coffee</a>
+          <a class="source" href="awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="entries.html">entries.coffee</a>
+          <a class="source" href="landing.html">landing.coffee</a>
+          <a class="source" href="login.html">login.coffee</a>
+          <a class="source" href="meanxy.html">meanxy.coffee</a>
+          <a class="source" href="nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>meanxy.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span>
+<span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span> <span class="o">||=</span> <span class="p">{}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-MeanXY'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-MeanXY">&#182;</a>
+        </div>
+        <h1>MeanXY</h1>
+
+<p>MeanXY is a <code>Tile</code>-based interface to <code>Concepts</code> that enables the user to explore the <code>Concepts</code> they created by building up <code>Queries</code>, expressed in the <code>Breadcrumbs</code> view. A new <code>Query</code> is created every time a user clicks a <code>Tile</code>. <code>Tiles</code> are then filtered to show new <code>Concepts</code> related to the current <code>Queries</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">MeanXY</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+  <span class="nv">id: </span><span class="s">&#39;views-meanxy&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>We start by creating the <code>Queries</code>, <code>Breadcrumbs</code> and <code>Concepts</code> that will drive the <code>Tiles</code> view</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">initialize: </span><span class="o">-&gt;</span>
+    <span class="nv">queries = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">Queries</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p><code>Breadcrumbs</code> display <code>Queries</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="vi">@breadcrumbs = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Breadcrumbs</span><span class="p">(</span><span class="nv">collection: </span><span class="nx">queries</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p><code>Concepts</code> are filtered by those same <code>Queries</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nv">concepts = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">Concepts</span><span class="p">(</span><span class="nv">queries: </span><span class="nx">queries</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>The <code>Tiles</code> view displays <code>Concepts</code> relevant to <code>Queries</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="vi">@tiles = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Tiles</span><span class="p">(</span><span class="nv">queries: </span><span class="nx">queries</span><span class="p">,</span> <span class="nv">collection: </span><span class="nx">concepts</span><span class="p">)</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&quot;</span><span class="err">#</span><span class="s">init&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>Rendering involves clearing the containing <code>el</code> and appending <code>Tiles</code> and <code>Breadcrumbs</code> to it</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">()</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@breadcrumbs</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@tiles</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&quot;</span><span class="err">#</span><span class="s">render&quot;</span>
+    <span class="nx">@</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

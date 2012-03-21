@@ -1,0 +1,194 @@
+
+$body_font_family: Verdana, sans-serif
+$heading_font_family: "Myriad Pro", "Myriad Web Pro", "Segoe UI", "Segoe", Myriad, "FrutigerNext", Frutiger, Tahoma, sans-serif
+
+$blau: #EDF7FA
+$grei: #CDCDCD
+$blaq: #080808
+
+.gray_bkg
+  background: #eee url(../img/classy_fabric.png)
+=gray_bkg
+  @extend .gray_bkg
+
+body
+  padding: 0
+  margin: 0
+  font-family: $body_font_family
+
+h1, h2
+  font-family: $heading_font_family
+
+h1, h2, p
+  text-rendering: optimizelegibility
+p
+  -webkit-font-smoothing: antialiased
+a
+  color: #888
+  &:hover
+    color: $blaq
+    text-decoration: underline
+
+#landing  
+  section
+    +container
+    overflow: hidden
+  #traits
+    padding-top: 20px
+    ul
+      padding-left: 0
+      margin-left: 0
+      +row(24)
+    li
+      +row(6, huge, screen)
+      +row(12, tablet)
+      +row(24, handheld)
+      padding-left: 0
+      .copy
+        +col(6, huge, screen)
+        +col(12, tablet)
+        +col(18, handheld)
+        h2
+          margin-bottom: 0
+          font-weight: normal
+        p
+          margin-top: 0
+          margin-bottom: 20px
+      .image
+        +row(6, huge, screen)
+        +row(6, tablet)
+        +col(6, handheld)
+        padding-bottom: 10px
+        img
+          width: 100%
+          height: auto
+    
+#landing
+  header
+    +gray_bkg
+    box-shadow: inset 0px -3px 5px -2px #DDD, 0px -1px 2px #DDD
+    border-bottom: 1px solid #DDD
+    margin-bottom: 20px
+  header #logo
+    +container()
+    overflow: hidden
+
+    .symbol
+      +col(8, huge)
+      +col(6, screen, tablet)
+      +hide(handheld)
+      text-align: right
+      padding-top: 15px
+      img
+        width: 100px
+    .type
+      +col(12, huge)
+      +col(18, screen, tablet)
+      +col(12, handheld)
+    h1
+      font-size: 48px
+      font-weight: normal
+      margin:
+        top: 0
+        bottom: 0
+      padding-top: 48px
+    h2
+      font-size: 25px
+      font-weight: normal
+      line-height: 160%
+      +hide(handheld)
+      margin:
+        top: 0
+        bottom: 10px
+      small
+        display: block
+        font-family: $body_font_family
+  
+  #top_form
+    +hide(handheld, screen, huge)
+  #bottom_form
+    +hide(handheld, tablet)
+  .login_nav
+    +row(16, huge, screen)
+    +push_row(4, huge, screen)
+    +row(24, tablet)
+    margin-bottom: 2px
+  form.login_or_register
+    box-shadow: inset 0px 3px 5px -2px #DDD, 0px 1px 2px #DDD
+    +gray_bkg
+    +row(16, huge, screen)
+    +row(24, tablet)
+    +push_row(4, huge, screen)
+    border:
+      radius: 6px
+      top-right-radius: 0
+      top-left-radius: 0
+    padding:  
+      top: 20px
+      bottom: 20px
+    margin-bottom: 20px
+    p
+      margin:
+        top: 0
+        bottom: 0
+    label
+      span
+        position: absolute
+        line-height: 28px
+        
+    .login
+      +row(5, screen, huge)
+      +row(9, tablet)
+      +push_row(1)
+      input
+        font-size: 16px
+        +input(5, screen, huge)
+        +input(9, tablet)
+    .pass
+      +row(5, screen, huge)
+      +row(9, tablet)
+      input
+        font-size: 16px
+        +input(5, huge, screen)
+        +input(9, tablet)
+    .login, .pass
+      margin-bottom: 0
+    .submit
+      +row(4, huge, screen, tablet)
+      input
+        +col(4, huge, screen, tablet)
+    .new_user
+      +row(4, huge, screen)
+      +row(6, tablet)
+      +push_row(2)
+      height: 26px
+      line-height: 26px
+      position: relative
+      small
+        +col(4)
+      input
+        position: absolute
+        right: 50px
+        top: 4px
+
+footer
+  +container()
+  text-align: center
+  nav
+    +row(16)
+    +push_row(4)
+    border-top: 1px solid $grei
+    padding:
+      top: 20px
+      bottom: 40px
+    
+#landing
+  #teaser
+    +col(4)
+    position: absolute
+    right: 0
+    display: none
+    
+
+    
+  

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>landing.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="../models/concepts.html">concepts.coffee</a>
+          <a class="source" href="../models/entries.html">entries.coffee</a>
+          <a class="source" href="../models/session.html">session.coffee</a>
+          <a class="source" href="../models/syncs.html">syncs.coffee</a>
+          <a class="source" href="../models/workflows.html">workflows.coffee</a>
+          <a class="source" href="agenda.html">agenda.coffee</a>
+          <a class="source" href="awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="entries.html">entries.coffee</a>
+          <a class="source" href="landing.html">landing.coffee</a>
+          <a class="source" href="login.html">login.coffee</a>
+          <a class="source" href="meanxy.html">meanxy.coffee</a>
+          <a class="source" href="nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>landing.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span>
+<span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span> <span class="o">||=</span> <span class="p">{}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Landing'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Landing">&#182;</a>
+        </div>
+        <h1>Landing</h1>
+
+<p>The landing page explains <strong>middlemachine</strong> to the visitor and invites them user to try it out by signing up. Returning users log in using the same form.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Landing</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s">&quot;&lt;div id=&#39;upperLoginSignupForm&#39;&gt;&lt;/div&gt;&lt;div id=&#39;lowerLoginSignupForm&#39;&gt;&lt;/div&gt;&quot;</span><span class="p">)</span>
+  <span class="nv">id: </span><span class="s">&#39;views-landing&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>At the start we create a <code>Login</code> model that holds credentials that are used to sign the visitor up or create a user&rsquo;s <code>Session</code>. Because in some responsive views the <code>@upperLoginSignupForm</code> form is hidden (or vice-versa), they share the same <code>login</code> model, so entered credentials remain in tact. For instnance: If the user rotates a tablet and another <code>LoginSibnupForm</code> is shown instead, the credentials they may have entered before are present in the other <code>LoginSignupForm</code> as well</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">initialize: </span><span class="o">-&gt;</span>
+    <span class="nv">login = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Login</span> <span class="nv">login: </span><span class="s">&#39;devuser1&#39;</span><span class="p">,</span> <span class="nv">password: </span><span class="s">&#39;admin123&#39;</span>
+    <span class="vi">@upperLoginSignupForm = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">LoginSignupForm</span> <span class="nv">model: </span><span class="nx">login</span>
+    <span class="vi">@lowerLoginSignupForm = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">LoginSignupForm</span> <span class="nv">model: </span><span class="nx">login</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>After rendering the landing template into the <code>el</code>, both placeholders for <code>LoginSignupForms</code> are found and replaced with their respective <code>els</code></p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">()</span>
+    <span class="nv">upperLoginSignupFormEl = </span><span class="nx">@$</span><span class="p">(</span><span class="s">&#39;#upperLoginSignupForm&#39;</span><span class="p">)</span>
+    <span class="nx">upperLoginSignupFormEl</span><span class="p">.</span><span class="nx">replaceWith</span> <span class="nx">@upperLoginSignupForm</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nv">lowerLoginSignupFormEl = </span><span class="nx">@$</span><span class="p">(</span><span class="s">&#39;#lowerLoginSignupForm&#39;</span><span class="p">)</span>
+    <span class="nx">lowerLoginSignupFormEl</span><span class="p">.</span><span class="nx">replaceWith</span> <span class="nx">@lowerLoginSignupForm</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

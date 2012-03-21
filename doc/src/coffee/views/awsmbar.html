@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>awsmbar.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="../models/concepts.html">concepts.coffee</a>
+          <a class="source" href="../models/entries.html">entries.coffee</a>
+          <a class="source" href="../models/session.html">session.coffee</a>
+          <a class="source" href="../models/syncs.html">syncs.coffee</a>
+          <a class="source" href="../models/workflows.html">workflows.coffee</a>
+          <a class="source" href="agenda.html">agenda.coffee</a>
+          <a class="source" href="awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="entries.html">entries.coffee</a>
+          <a class="source" href="landing.html">landing.coffee</a>
+          <a class="source" href="login.html">login.coffee</a>
+          <a class="source" href="meanxy.html">meanxy.coffee</a>
+          <a class="source" href="nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>awsmbar.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-AwsmBar'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-AwsmBar">&#182;</a>
+        </div>
+        <h1>AwsmBar</h1>
+
+<p><code>AwsmBar</code> lets the user (identified with <code>Session</code>) edit an <code>Entry</code> or filter existing <code>Entries</code></p>
+
+<p>When a user begins to create an <code>Entry</code> or filtering <code>Entries</code>, it displays related <code>Concepts</code> as <code>RelevantConcepts</code> (stored in <code>@relevant</code>) and offers to auto-complete <code>Concepts</code> as <code>SuggestedConcepts</code> (stored in <code>@suggestions</code>)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span>
+<span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span> <span class="o">||=</span> <span class="p">{}</span>
+<span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span> <span class="o">||=</span> <span class="p">{}</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">model: </span><span class="nx">MM</span><span class="p">.</span><span class="nx">Entry</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+  <span class="nv">className: </span><span class="s">&#39;awsmbar&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>When <code>Fuzz</code> view wants to persist the current <code>Entry</code>, we send it over to <code>@collection</code>, reinstantiate the <code>@model</code> and sub-views (<code>RelevantConcepts</code>, <code>SuggestedConcepts</code>) and re-<code>render</code> the <code>AwsmBar</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">createEntry: </span><span class="nf">(entry) -&gt;</span>
+    <span class="nx">@entries</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">entry</span><span class="p">)</span>   
+    
+    <span class="nx">@buildNewModel</span><span class="p">()</span>
+    <span class="nx">@createSubViews</span><span class="p">(</span><span class="nx">@model</span><span class="p">)</span>
+
+    <span class="nx">@render</span><span class="p">()</span>
+    <span class="nx">@onRendered</span><span class="p">()</span>
+
+  <span class="nv">buildNewModel: </span><span class="nf">() -&gt;</span>
+    <span class="nx">@agenda</span><span class="p">.</span><span class="nx">unBindEntriesSearch</span><span class="p">(</span><span class="nx">@model</span><span class="p">)</span>
+    <span class="vi">@model = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Entry</span><span class="p">(</span><span class="nv">fuzz: </span><span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="nx">@agenda</span><span class="p">.</span><span class="nx">bindEntriesSearch</span><span class="p">(</span><span class="nx">@model</span><span class="p">)</span>
+
+  <span class="nv">onFuzzChange: </span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">fuzz</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#fetchConcepts&#39;</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">fuzz</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>Make sure any beginning and trailing newlines and tabs are removed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nv">fuzzContent = </span><span class="nx">fuzz</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^(\n|\r|\t)+$/</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>Fetch relevant concepts unless we&rsquo;re dealing with an empty fuzz</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="nx">fuzzContent</span> <span class="o">isnt</span> <span class="s">&#39;&#39;</span>
+      <span class="nx">@model</span><span class="p">.</span><span class="nx">fetchRelevantConcepts</span><span class="p">()</span>
+      <span class="nx">@model</span><span class="p">.</span><span class="nx">fetchSuggestedConcepts</span><span class="p">()</span>
+    <span class="k">else</span>
+      <span class="nx">@model</span><span class="p">.</span><span class="nx">resetRelevantConcepts</span><span class="p">()</span>
+      <span class="nx">@model</span><span class="p">.</span><span class="nx">resetSuggestedConcepts</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>@askForSuggestion if @autoCompletable()</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">createSubViews: </span><span class="nf">(model) -&gt;</span>
+    <span class="vi">@fuzz = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">Fuzz</span> <span class="nv">model: </span><span class="nx">model</span><span class="p">,</span> <span class="nv">awsmbar: </span><span class="nx">@</span>
+    <span class="vi">@relevant = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">RelevantConcepts</span> <span class="nv">collection: </span><span class="nx">model</span><span class="p">.</span><span class="nx">relevantConcepts</span><span class="p">,</span> <span class="nv">awsmbar: </span><span class="nx">@</span>
+    <span class="vi">@suggested = </span> <span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">SuggestedConcepts</span> <span class="nv">collection: </span><span class="nx">model</span><span class="p">.</span><span class="nx">suggestedConcepts</span><span class="p">,</span> <span class="nv">awsmbar: </span><span class="nx">@</span>
+
+  <span class="nv">focus: </span><span class="o">-&gt;</span>
+    <span class="nx">@fuzz</span><span class="p">.</span><span class="nx">setCaret</span><span class="p">()</span>
+
+  <span class="nv">getFuzz: </span><span class="o">-&gt;</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">)</span>
+
+  <span class="nv">initialize: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@entries = </span><span class="nx">options</span><span class="p">.</span><span class="nx">entries</span>
+    <span class="vi">@agenda = </span><span class="nx">options</span><span class="p">.</span><span class="nx">agenda</span>
+    <span class="nx">@createSubViews</span><span class="p">(</span><span class="nx">@model</span><span class="p">)</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;change:fuzz&#39;</span><span class="p">,</span> <span class="nx">@onFuzzChange</span>
+    
+
+  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">()</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@fuzz</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@relevant</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@suggested</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@</span>
+
+  <span class="nv">onRendered: </span><span class="o">=&gt;</span>
+    <span class="nx">@fuzz</span><span class="p">.</span><span class="nx">onRendered</span><span class="p">()</span>
+    <span class="nx">@focus</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Relevant_Concept_View'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Relevant_Concept_View">&#182;</a>
+        </div>
+        <h2>Relevant Concept View</h2>
+
+<p>An individual <code>Concept</code> that relates to <code>Awsmbar</code>&rsquo;s <code>Entry</code>. If clicked, it should append itself to the <code>Entry.fuzz</code> attribute</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">RelevantConcept</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span> <span class="s">&quot;&lt;%= content %&gt;&quot;</span>
+  <span class="nv">model: </span><span class="nx">MM</span><span class="p">.</span><span class="nx">Concept</span>
+  <span class="nv">tagName: </span><span class="s">&#39;li&#39;</span>
+
+  <span class="nv">events:</span>
+    <span class="s">&#39;click&#39;</span><span class="o">:</span> <span class="s">&#39;appendToEntry&#39;</span>
+
+  <span class="nv">appendToEntry: </span><span class="o">=&gt;</span>
+    <span class="nx">@entry</span><span class="p">.</span><span class="nx">appendRelevantConcept</span><span class="p">(</span><span class="nx">@model</span><span class="p">)</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;relevantConceptAppended&#39;</span>
+
+
+  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">(</span><span class="nx">@model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">())</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;kind&#39;</span><span class="p">)</span>
+    <span class="nx">@</span>
+
+  <span class="nv">initialize: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@model = </span><span class="nx">options</span><span class="p">.</span><span class="nx">model</span>
+    <span class="vi">@entry = </span><span class="nx">options</span><span class="p">.</span><span class="nx">entry</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Relevant_Concept_Collection'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Relevant_Concept_Collection">&#182;</a>
+        </div>
+        <h2>Relevant Concept Collection</h2>
+
+<p>A collection of relevant concepts</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">RelevantConcepts</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span> <span class="s">&quot;&quot;</span>
+  <span class="nv">tagName: </span><span class="s">&#39;ul&#39;</span><span class="p">,</span> <span class="nv">className: </span><span class="s">&#39;relevant&#39;</span>
+  <span class="nv">add: </span><span class="p">(</span><span class="nx">concept</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nv">view = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">RelevantConcept</span><span class="p">(</span><span class="nv">model: </span><span class="nx">concept</span><span class="p">,</span> <span class="nv">entry: </span><span class="nx">@entry</span><span class="p">)</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+  <span class="nv">reset: </span><span class="o">=&gt;</span>
+    <span class="nx">@render</span><span class="p">()</span>
+    <span class="nx">@add</span><span class="p">(</span><span class="nx">concept</span><span class="p">)</span> <span class="k">for</span> <span class="nx">concept</span> <span class="k">in</span> <span class="nx">@collection</span><span class="p">.</span><span class="nx">models</span>
+  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">()</span>
+    <span class="nx">@</span>
+  <span class="nv">initialize: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@awsmbar = </span><span class="nx">options</span><span class="p">.</span><span class="nx">awsmbar</span>
+    <span class="vi">@entry = </span><span class="nx">@collection</span><span class="p">.</span><span class="nx">entry</span>
+    <span class="nx">@collection</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;add&#39;</span><span class="p">,</span> <span class="nx">@add</span>
+    <span class="nx">@collection</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;reset&#39;</span><span class="p">,</span> <span class="nx">@reset</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Suggested_Concept_View'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Suggested_Concept_View">&#182;</a>
+        </div>
+        <h2>Suggested Concept View</h2>
+
+<p>An individual <code>Concept</code> that appears on the list of <code>SuggestedConcepts</code> for auto-completion of the last word</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">SuggestedConcepts</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span> <span class="s">&quot;&lt;%= content %&gt;&quot;</span>
+  <span class="nv">model: </span><span class="nx">MM</span><span class="p">.</span><span class="nx">Concept</span>
+  <span class="nv">tagName: </span><span class="s">&#39;li&#39;</span>
+
+  <span class="nv">events:</span>
+    <span class="s">&#39;click&#39;</span><span class="o">:</span> <span class="s">&#39;autoCompleteEntry&#39;</span>
+
+  <span class="nv">autoCompleteEntry: </span><span class="o">=&gt;</span>
+    <span class="nx">@entry</span><span class="p">.</span><span class="nx">autoCompleteWith</span><span class="p">(</span><span class="nx">@model</span><span class="p">)</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;suggestedConceptCompleted&#39;</span>
+
+  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">(</span><span class="nx">@model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">())</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;kind&#39;</span><span class="p">)</span>
+    <span class="nx">@</span>
+
+  <span class="nv">initialize: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@model = </span><span class="nx">options</span><span class="p">.</span><span class="nx">model</span>
+    <span class="vi">@entry = </span><span class="nx">options</span><span class="p">.</span><span class="nx">entry</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Suggested_Concept_Collection'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Suggested_Concept_Collection">&#182;</a>
+        </div>
+        <h2>Suggested Concept Collection</h2>
+
+<p>A collection of suggested <code>Concepts</code> appears as a list of auto-complete choices while the user is editing <code>Fuzz</code>.
+The </p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">SuggestedConcepts</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span> <span class="s">&quot;&quot;</span>
+  <span class="nv">tagName: </span><span class="s">&#39;ul&#39;</span><span class="p">,</span> <span class="nv">className: </span><span class="s">&#39;suggested&#39;</span>
+
+  <span class="nv">add: </span><span class="p">(</span><span class="nx">concept</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nv">view = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">SuggestedConcept</span><span class="p">(</span><span class="nv">model: </span><span class="nx">concept</span><span class="p">,</span> <span class="nv">entry: </span><span class="nx">@entry</span><span class="p">)</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+
+  <span class="nv">reset: </span><span class="o">=&gt;</span>
+    <span class="nx">@render</span><span class="p">()</span>
+    <span class="nx">@add</span><span class="p">(</span><span class="nx">concept</span><span class="p">)</span> <span class="k">for</span> <span class="nx">concept</span> <span class="k">in</span> <span class="nx">@collection</span><span class="p">.</span><span class="nx">models</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#reset&#39;</span><span class="p">,</span> <span class="nx">@$el</span>
+
+  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">()</span>
+    <span class="nv">offsets = </span><span class="nx">@fuzz</span><span class="p">.</span><span class="nx">getAutoCompleteOffsets</span><span class="p">()</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#render&#39;</span><span class="p">,</span> <span class="nx">@$el</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nv">style.top = </span><span class="nx">offsets</span><span class="p">.</span><span class="nx">x</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nv">style.left = </span><span class="nx">offsets</span><span class="p">.</span><span class="nx">y</span>
+    <span class="nx">@</span>
+
+  <span class="nv">initialize: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@awsmbar = </span><span class="nx">options</span><span class="p">.</span><span class="nx">awsmbar</span>
+    <span class="vi">@entry = </span><span class="nx">@collection</span><span class="p">.</span><span class="nx">entry</span>
+    <span class="vi">@fuzz = </span><span class="nx">@awsmbar</span><span class="p">.</span><span class="nx">fuzz</span>
+    <span class="nx">@collection</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;add&#39;</span><span class="p">,</span> <span class="nx">@add</span>
+    <span class="nx">@collection</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;reset&#39;</span><span class="p">,</span> <span class="nx">@reset</span>
+    </pre></div>
+      </td>
+    </tr>
+    <tr id='section-Fuzz_View'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Fuzz_View">&#182;</a>
+        </div>
+        <h2>Fuzz View</h2>
+
+<p>Editing an Entry means speaking in Fuzztle</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">Fuzz</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span> <span class="s">&quot;&lt;form class=&#39;awsmbar-fuzz&#39;&gt;&lt;textarea rows=&#39;1&#39; placeholder=&#39;search or create&#39;&gt;&lt;%= fuzz %&gt;&lt;/textarea&gt;&lt;/form&gt;&quot;</span>
+
+  <span class="nv">events:</span>
+    <span class="s">&quot;keydown textarea&quot;</span>  <span class="o">:</span> <span class="s">&#39;onKeyDown&#39;</span>
+    <span class="s">&quot;keyup textarea&quot;</span>    <span class="o">:</span> <span class="s">&#39;onKeyUp&#39;</span>
+    <span class="s">&quot;mouseup textarea&quot;</span>  <span class="o">:</span> <span class="s">&#39;onMouseUp&#39;</span>
+    <span class="s">&quot;focus textarea&quot;</span>    <span class="o">:</span> <span class="s">&#39;onFocus&#39;</span>
+    <span class="s">&quot;blur textarea&quot;</span>     <span class="o">:</span> <span class="s">&#39;onBlur&#39;</span>
+
+  <span class="nv">onFocus: </span><span class="o">=&gt;</span>
+    <span class="vi">@focused = </span><span class="mi">1</span>
+
+  <span class="nv">onBlur: </span><span class="o">=&gt;</span>
+    <span class="vi">@focused = </span><span class="mi">0</span>
+    <span class="nx">@resizeArea</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>Insert a tab silently because we don&rsquo;t want to re-render if the user is focused</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">insertTab: </span><span class="o">-&gt;</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;fuzz&#39;</span><span class="p">,</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;\t&quot;</span>
+    <span class="nx">@area</span><span class="p">.</span><span class="nx">val</span> <span class="nx">@area</span><span class="p">.</span><span class="nx">val</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;\t&quot;</span>
+  
+  <span class="nv">onKeyDown: </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nv">k = </span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">||</span> <span class="nx">e</span><span class="p">.</span><span class="nx">charCode</span>
+    <span class="k">switch</span> <span class="nx">k</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>TAB</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">when</span> <span class="mi">9</span>
+        <span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nx">shiftKey</span> <span class="o">==</span> <span class="kc">false</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p>if @autoCompletable()</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>          <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
+          <span class="nx">@insertTab</span><span class="p">()</span> <span class="nx">unless</span> <span class="nx">@autoCompletable</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>HANDLE TAB by autocompleting
+RETURN</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">when</span> <span class="mi">13</span>
+        <span class="nv">fuzz = </span><span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>The last key isn&rsquo;t in the model property yet, so we append it to the last character</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="nv">lastFewCharacters = </span><span class="nx">fuzz</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">fuzz</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">fuzz</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;\n&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>Finish editing if the last few characters were returns</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="k">if</span> <span class="nx">lastFewCharacters</span> <span class="o">==</span> <span class="s">&#39;\n\n&#39;</span>
+          <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
+          <span class="nx">@finishEditing</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>When typing is finished, <code>Entry</code> is updated, <code>@area</code> is resized, <code>RelevantConcepts</code> are fetched on the <code>@model</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onKeyUp: </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;fuzz&#39;</span><span class="p">,</span> <span class="nx">@area</span><span class="p">.</span><span class="nx">val</span><span class="p">()</span>
+
+    <span class="nx">@resizeArea</span><span class="p">()</span> <span class="k">if</span> <span class="nx">@resizeRequired</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-18'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-18">&#182;</a>
+        </div>
+        <p>Resize the <code>@clone</code> in case the user changes the width of textarea (permitted in most browsers)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onMouseUp: </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nx">@clone</span><span class="p">.</span><span class="nx">resize</span> <span class="nx">@area</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-19'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-19">&#182;</a>
+        </div>
+        <p>After a <code>Concept</code> was appended to the <code>Entry.fuzz</code> attribute, we update the <code>@area</code> and focus on it with <code>Fuzz#setCaret</code>, so that input may be continued</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onRelevantConceptAppended: </span><span class="o">=&gt;</span>
+    <span class="nv">fuzz = </span><span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">)</span>
+    <span class="nx">@area</span><span class="p">.</span><span class="nx">val</span> <span class="nx">fuzz</span> <span class="o">+</span> <span class="s">&#39; &#39;</span>
+    <span class="nx">@setCaret</span> <span class="nx">fuzz</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">fetchRelevantConcepts</span><span class="p">()</span>
+  </pre></div>
+      </td>
+    </tr>
+    <tr id='section-20'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-20">&#182;</a>
+        </div>
+        <p>After an <code>Entry</code> was successfully created, we clear our current model and start from scratch</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onClear: </span><span class="o">=&gt;</span>
+    <span class="nx">@area</span><span class="p">.</span><span class="nx">val</span> <span class="s">&#39;&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-21'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p>Selects a range of characters, keeping in mind the browser quirks</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">setSelection: </span><span class="nf">(start, end) -&gt;</span>
+    <span class="nv">textarea = </span><span class="nx">@area</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">textarea</span><span class="p">.</span><span class="nx">setSelectionRange</span>
+      <span class="nx">textarea</span><span class="p">.</span><span class="nx">focus</span><span class="p">()</span>
+      <span class="nx">textarea</span><span class="p">.</span><span class="nx">setSelectionRange</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">end</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="nx">@area</span><span class="p">.</span><span class="nx">createTextRange</span>
+      <span class="nv">range = </span><span class="nx">textarea</span><span class="p">.</span><span class="nx">createTextRange</span><span class="p">()</span>
+      <span class="nx">range</span><span class="p">.</span><span class="nx">collapse</span> <span class="kc">true</span>
+      <span class="nx">range</span><span class="p">.</span><span class="nx">moveEnd</span> <span class="s">&quot;character&quot;</span><span class="p">,</span> <span class="nx">end</span>
+      <span class="nx">range</span><span class="p">.</span><span class="nx">moveStart</span> <span class="s">&quot;character&quot;</span><span class="p">,</span> <span class="nx">start</span>
+      <span class="nx">range</span><span class="p">.</span><span class="nx">select</span><span class="p">()</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#setSelection&#39;</span>
+  </pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
+        </div>
+        <p>Sets caret to a specified position by selecting no characters at that offset</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">setCaret: </span><span class="nf">(pos) -&gt;</span>
+    <span class="nx">pos</span> <span class="o">||=</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">).</span><span class="nx">length</span>
+    <span class="nx">@setSelection</span> <span class="nx">pos</span><span class="p">,</span> <span class="nx">pos</span>
+  
+  <span class="nv">resizeArea: </span><span class="o">-&gt;</span>
+    <span class="nv">newHeight = </span> <span class="nx">@clone</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">@focused</span>
+      <span class="nx">newHeight</span> <span class="o">+=</span> <span class="nx">@lineHeight</span>
+    <span class="nx">@area</span><span class="p">.</span><span class="nx">height</span> <span class="nx">newHeight</span>
+    
+
+  <span class="nv">resizeRequired: </span><span class="o">-&gt;</span>
+    <span class="nv">probably = </span><span class="kc">false</span>
+    <span class="k">if</span> <span class="nx">@area</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span> <span class="o">!=</span> <span class="nx">@clone</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="nx">@lineHeight</span> <span class="o">*</span> <span class="nx">@focused</span><span class="p">)</span>
+      <span class="nv">probably = </span><span class="kc">true</span>
+    
+    <span class="nx">probably</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-23'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-23">&#182;</a>
+        </div>
+        <p>currentWord: &ndash;&gt;
+  @textarea.caretPosition</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">autoCompletable: </span><span class="o">-&gt;</span>
+    <span class="nv">actually = </span><span class="kc">false</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-24'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-24">&#182;</a>
+        </div>
+        <p>word = @currentWord()
+if @isConcept(word)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="kc">false</span>
+      <span class="nv">actually = </span><span class="kc">true</span>
+    
+    <span class="nx">actually</span>
+
+  <span class="nv">focusArea: </span><span class="o">=&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#focusArea&#39;</span>
+    <span class="nx">@area</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">focus</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-25'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-25">&#182;</a>
+        </div>
+        <p>Proxy to <code>FuzzClone</code> which calculates the correct position for <code>SuggestedConcepts</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">getAutoCompleteOffsets: </span><span class="o">-&gt;</span>
+    <span class="nx">@clone</span><span class="p">.</span><span class="nx">getAutoCompleteOffsets</span><span class="p">()</span>
+
+  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
+    <span class="vi">@area = </span><span class="nx">@$</span><span class="p">(</span><span class="s">&#39;textarea&#39;</span><span class="p">)</span>
+    <span class="vi">@$clone = </span><span class="nx">@clone</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@$clone</span>
+    <span class="nx">@</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-26'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-26">&#182;</a>
+        </div>
+        <p>Some browsers don&rsquo;t return proper sizes until we&rsquo;re attached to the DOM</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onRendered: </span><span class="o">=&gt;</span>
+    <span class="vi">@lineHeight = </span><span class="nx">@area</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s">&#39;lineHeight&#39;</span><span class="p">)</span>
+    <span class="vi">@lineHeight = </span><span class="nb">parseInt</span> <span class="nx">@lineHeight</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">@lineHeight</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&#39;px&#39;</span><span class="p">))</span>
+    <span class="nx">@clone</span><span class="p">.</span><span class="nx">onRendered</span><span class="p">()</span>
+    <span class="nx">@resizeArea</span><span class="p">()</span>
+    </pre></div>
+      </td>
+    </tr>
+    <tr id='section-27'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-27">&#182;</a>
+        </div>
+        <p>If a user presses the return key twice
+we finish editing the current entry and
+return to a new awesomebar for search</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">finishEditing: </span><span class="o">-&gt;</span>
+    <span class="nx">@awsmbar</span><span class="p">.</span><span class="nx">createEntry</span><span class="p">(</span><span class="nx">@model</span><span class="p">)</span>
+    <span class="nx">@area</span><span class="p">.</span><span class="nx">blur</span><span class="p">()</span>
+    <span class="nx">@onBlur</span><span class="p">()</span>
+
+  <span class="nv">initialize: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@awsmbar = </span><span class="nx">options</span><span class="p">.</span><span class="nx">awsmbar</span>
+
+    <span class="vi">@focused = </span><span class="mi">0</span>
+    <span class="vi">@clone = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">Fuzz</span><span class="p">.</span><span class="nx">Clone</span> <span class="nv">role_model: </span><span class="nx">@</span><span class="p">,</span> <span class="nv">model: </span><span class="nx">@model</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-28'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-28">&#182;</a>
+        </div>
+        <p>We don&rsquo;t need to rerender every time, but we want to know when a new <code>Concept</code> was appended</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nx">@model</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;relevantConceptAppended&#39;</span><span class="p">,</span> <span class="nx">@onRelevantConceptAppended</span>
+    </pre></div>
+      </td>
+    </tr>
+    <tr id='section-29'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-29">&#182;</a>
+        </div>
+        <p>Replicates textarea in a div and reports back measurements</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">.</span><span class="nx">Fuzz</span><span class="p">.</span><span class="nx">Clone</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span> <span class="s">&quot;&lt;span&gt;&lt;%= fuzz %&gt;&lt;/span&gt;&quot;</span>
+  <span class="nv">className: </span><span class="s">&#39;awsmbar-clone&#39;</span>
+
+  <span class="nv">traits: </span><span class="p">[</span>
+    <span class="s">&#39;lineHeight&#39;</span><span class="p">,</span> <span class="s">&#39;textDecoration&#39;</span><span class="p">,</span> <span class="s">&#39;letterSpacing&#39;</span><span class="p">,</span>
+    <span class="s">&#39;fontSize&#39;</span><span class="p">,</span> <span class="s">&#39;fontFamily&#39;</span><span class="p">,</span> <span class="s">&#39;fontStyle&#39;</span><span class="p">,</span> <span class="s">&#39;fontWeight&#39;</span><span class="p">,</span> <span class="s">&#39;textRendering&#39;</span><span class="p">,</span>
+    <span class="s">&#39;textTransform&#39;</span><span class="p">,</span> <span class="s">&#39;textAlign&#39;</span><span class="p">,</span> <span class="s">&#39;direction&#39;</span><span class="p">,</span> <span class="s">&#39;wordSpacing&#39;</span><span class="p">,</span> <span class="s">&#39;fontSizeAdjust&#39;</span><span class="p">,</span>
+    <span class="s">&#39;paddingTop&#39;</span><span class="p">,</span> <span class="s">&#39;paddingLeft&#39;</span><span class="p">,</span> <span class="s">&#39;paddingBottom&#39;</span><span class="p">,</span> <span class="s">&#39;paddingRight&#39;</span><span class="p">,</span> <span class="s">&#39;width&#39;</span><span class="p">,</span> <span class="s">&#39;whiteSpace&#39;</span><span class="p">,</span>
+    <span class="s">&#39;textIndent&#39;</span>
+  <span class="p">]</span>
+
+  <span class="nv">height: </span><span class="o">-&gt;</span>
+    <span class="nx">@</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span>
+
+  <span class="nv">impersonate: </span><span class="o">=&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#impersonate&#39;</span><span class="p">,</span> <span class="nx">@role_model</span>
+    <span class="k">for</span> <span class="nx">trait</span> <span class="k">in</span> <span class="nx">@traits</span>  
+      <span class="nx">@el</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">trait</span><span class="p">]</span> <span class="o">=</span> <span class="nx">@role_model</span><span class="p">.</span><span class="nx">area</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="nx">trait</span><span class="p">)</span>
+  
+  <span class="nv">last_word: </span><span class="nf">(sentence) -&gt;</span>
+    <span class="nx">sentence</span><span class="p">.</span><span class="nx">substr</span> <span class="nx">sentence</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">),</span> <span class="nx">sentence</span><span class="p">.</span><span class="nx">length</span>
+  
+  <span class="nv">subdivide: </span><span class="nf">($pan) -&gt;</span>
+    <span class="k">if</span> <span class="nx">$pan</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span> <span class="o">&gt;</span> <span class="nx">@lineHeight</span>
+      <span class="nv">carry = </span><span class="s">&#39;&#39;</span>
+      <span class="k">while</span> <span class="nx">$pan</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span> <span class="o">&gt;</span> <span class="nx">@lineHeight</span>
+        <span class="nv">content = </span><span class="nx">$pan</span><span class="p">.</span><span class="nx">html</span><span class="p">()</span>
+        <span class="nv">length = </span><span class="nx">content</span><span class="p">.</span><span class="nx">length</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">last_word_start = </span><span class="nx">content</span><span class="p">.</span><span class="nx">lastIndexOf</span> <span class="s">&#39; &#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span>
+          <span class="nv">carry = </span><span class="nx">content</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">last_word_start</span><span class="p">,</span> <span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="nx">carry</span>
+          <span class="nv">content = </span><span class="nx">content</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">last_word_start</span><span class="p">)</span>
+        <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-30'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-30">&#182;</a>
+        </div>
+        <p>Cannot break word. Splitting by characters</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>          <span class="nv">carry = </span><span class="nx">content</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">content</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">content</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+          <span class="nv">content = </span><span class="nx">content</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">content</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nx">$pan</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span>
+      <span class="nv">$br = </span><span class="nx">$</span><span class="p">(</span><span class="s">&quot;&lt;br&gt;&quot;</span><span class="p">).</span><span class="nx">insertAfter</span><span class="p">(</span><span class="nx">$pan</span><span class="p">)</span>
+      <span class="nv">$s = </span><span class="nx">$</span><span class="p">(</span><span class="s">&quot;&lt;span&gt;&quot;</span><span class="o">+</span><span class="nx">carry</span><span class="o">+</span><span class="s">&quot;&lt;/span&gt;&quot;</span><span class="p">).</span><span class="nx">insertAfter</span><span class="p">(</span><span class="nx">$br</span><span class="p">)</span>
+      <span class="nx">@subdivide</span> <span class="nx">$s</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="nx">$pan</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;&#39;</span>
+      <span class="nx">$pan</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s">&#39;&amp;nbsp;&#39;</span><span class="p">)</span>
+
+  <span class="nv">parrot: </span><span class="o">=&gt;</span>
+    <span class="nv">fuzz = </span><span class="nx">@model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">)</span>
+    <span class="nv">fuzz = </span><span class="nx">fuzz</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">_</span><span class="p">(</span><span class="nx">fuzz</span><span class="p">).</span><span class="nx">last</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;&#39;</span>
+      <span class="nx">fuzz</span><span class="p">[</span><span class="nx">fuzz</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&amp;nbsp;&#39;</span>
+    <span class="nv">fuzz = </span><span class="s">&#39;&lt;span&gt;&#39;</span> <span class="o">+</span> <span class="nx">fuzz</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s">&#39;&lt;/span&gt;&lt;br&gt;&lt;span&gt;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;&lt;/span&gt;&#39;</span>
+    <span class="nx">@</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">fuzz</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-31'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-31">&#182;</a>
+        </div>
+        <p>Subdivide long words like URLs etc.
+for span in @.$el.children(&lsquo;span&rsquo;)
+ @subdivide $(span)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">resize: </span><span class="nf">(width) -&gt;</span>
+    <span class="nx">@</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">width</span><span class="p">(</span><span class="nx">width</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-32'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-32">&#182;</a>
+        </div>
+        <p>@.$el.height(height)</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nx">@role_model</span><span class="p">.</span><span class="nx">resizeArea</span><span class="p">()</span>
+
+  <span class="nv">getAutoCompleteOffsets: </span><span class="o">-&gt;</span>
+    <span class="nv">$lastSpan = </span><span class="nx">@$</span><span class="p">(</span><span class="s">&#39;span&#39;</span><span class="p">).</span><span class="nx">last</span><span class="p">()</span>
+    <span class="nv">offset = </span><span class="nx">$lastSpan</span><span class="p">.</span><span class="nx">offset</span><span class="p">()</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#getAutoCompleteOffsets&#39;</span><span class="p">,</span> <span class="nx">offset</span>
+    <span class="nv">offset =</span>
+      <span class="nv">left: </span><span class="nx">offset</span><span class="p">.</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">$lastSpan</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span>
+      <span class="nv">top: </span><span class="nx">offset</span><span class="p">.</span><span class="nx">top</span> <span class="o">+</span> <span class="nx">$lastSpan</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span>
+    <span class="nx">offset</span>
+
+  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span> <span class="nx">@role_model</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
+    <span class="nx">@</span>
+
+  <span class="nv">onRendered: </span><span class="o">=&gt;</span>
+    <span class="nx">@impersonate</span><span class="p">()</span>
+
+    
+  <span class="nv">initialize: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@role_model = </span><span class="nx">options</span><span class="p">.</span><span class="nx">role_model</span>    
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">bind</span> <span class="s">&#39;change&#39;</span><span class="p">,</span> <span class="nx">@parrot</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

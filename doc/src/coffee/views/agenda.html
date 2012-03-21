@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>agenda.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="../models/concepts.html">concepts.coffee</a>
+          <a class="source" href="../models/entries.html">entries.coffee</a>
+          <a class="source" href="../models/session.html">session.coffee</a>
+          <a class="source" href="../models/syncs.html">syncs.coffee</a>
+          <a class="source" href="../models/workflows.html">workflows.coffee</a>
+          <a class="source" href="agenda.html">agenda.coffee</a>
+          <a class="source" href="awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="entries.html">entries.coffee</a>
+          <a class="source" href="landing.html">landing.coffee</a>
+          <a class="source" href="login.html">login.coffee</a>
+          <a class="source" href="meanxy.html">meanxy.coffee</a>
+          <a class="source" href="nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>agenda.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-Agenda_View'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Agenda_View">&#182;</a>
+        </div>
+        <h1>Agenda View</h1>
+
+<p><code>Agenda</code> is the main view of <strong>middlemachine</strong>. It facilitates creating, editing and filtering of thoughts (or individual <code>Entries</code>). To accomplish that goal, it has to coordinate the following sub-views</p>
+
+<h2>Main sub-views</h2>
+
+<p>The following main sub-views of Agenda enable the most crucial editing and filtering of a user&rsquo;s thoughs</p>
+
+<ul>
+<li><code>AwsmBar</code> &ndash; A unified way to query and create new <code>Entries</code>. A crossbreed between a search bar and an <code>Entry</code> edit view</li>
+<li><code>Entries</code> &ndash; A collection of individual thoughts, expressed as a <code>Fuzz</code> (a piece of data in fuzztle markup)</li>
+</ul>
+
+<h2>Auxilliary views</h2>
+
+<p>The following auxilliary sub-views of Agenda enable a basic overview of the user&rsquo;s concepts and a way to filter the current entries related to those concepts</p>
+
+<ul>
+<li><code>Aims</code> &ndash; A group of <code>Concepts</code> similar to tags. It describes the user&rsquo;s intentions and abstract <code>Concepts</code> their <code>Entries</code> belong to</li>
+<li><code>Contacts</code> &ndash; A group of <code>Concepts</code> that describes people the user shares <code>Entries</code> with</li>
+<li><code>Locations</code> &ndash; A group of <code>Concepts</code> that describes the location of the user and individual <code>Entries</code> in either the physical or abstract domain</li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span>
+<span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span> <span class="o">||=</span> <span class="p">{}</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Agenda</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+  <span class="nv">id: </span><span class="s">&#39;views-agenda&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Initialize'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Initialize">&#182;</a>
+        </div>
+        <h3>Initialize</h3>
+
+<p>In the beginning, we need to instantiate the individual models, collections and views that belong to <code>Agenda</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">initialize: </span><span class="o">-&gt;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>To help <code>AwsmBar</code> work, we create an empty <code>Entry</code> the user will modify or use to filter existing related <code>Entries</code> with</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="vi">@entry = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Entry</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>We create a collection of <code>Entries</code> and their <code>View</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="vi">@entries = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Entries</span><span class="p">()</span>
+    <span class="vi">@entriesView = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Entries</span><span class="p">(</span><span class="nv">collection: </span><span class="nx">@entries</span><span class="p">,</span> <span class="nv">agenda: </span><span class="nx">@</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p><code>AwsmBar</code> recieves both, but <code>Entries</code> don&rsquo;t arrive as a <code>Collection</code>, because we don&rsquo;t need to bind to their events yet</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="vi">@awsmBar = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">AwsmBar</span><span class="p">(</span><span class="nv">model: </span><span class="nx">@entry</span><span class="p">,</span> <span class="nv">entries: </span><span class="nx">@entries</span><span class="p">,</span> <span class="nv">agenda: </span><span class="nx">@</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>Fetch <code>Workflows</code> and <code>Entries</code> for the first time.</p>
+
+<p>Warning: Race condition? <code>Entries</code> might render before <code>Workflows</code> have been fetched</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nx">@fetchWorkflows</span><span class="p">()</span>
+    <span class="nx">@fetchEntries</span><span class="p">()</span>
+    <span class="nx">@bindEntriesSearch</span><span class="p">(</span><span class="nx">@entry</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Initial_fetch'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Initial_fetch">&#182;</a>
+        </div>
+        <h3>Initial fetch</h3>
+
+<p>Right now the <code>API</code> calls <code>success</code> even in case of internal errors, because <code>JSONP</code> doesn&rsquo;t support <code>status</code> codes.
+However, <code>error</code> is invoked in case there is a timeout because the network is unreachable.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">fetchEntries: </span><span class="o">-&gt;</span>
+    <span class="nv">options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">@getFetchRequestOptions</span><span class="p">(),</span> <span class="nx">@getFetchErrorOptions</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>Simple fetch without a <code>limit</code> will do</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nx">@entries</span><span class="p">.</span><span class="nx">fetch</span> <span class="nx">options</span>
+  <span class="nv">fetchWorkflows: </span><span class="o">-&gt;</span>
+    <span class="nx">MM</span><span class="p">.</span><span class="nx">workflows</span><span class="p">.</span><span class="nx">fetch</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>When the <code>Entry</code> for <code>AwsmBar</code> is instantiated or re-instantiated, we need to bind and unbind events appropriately.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">bindEntriesSearch: </span><span class="nf">(entry) -&gt;</span>
+    <span class="nx">entry</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;change:fuzz&#39;</span><span class="p">,</span> <span class="nx">@searchForEntries</span>
+  <span class="nv">unBindEntriesSearch: </span><span class="nf">(entry) -&gt;</span>
+    <span class="nx">entry</span><span class="p">.</span><span class="kc">off</span> <span class="s">&#39;change:fuzz&#39;</span><span class="p">,</span> <span class="nx">@searchForEntries</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Entry_search/filter'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Entry_search/filter">&#182;</a>
+        </div>
+        <h3>Entry search/filter</h3>
+
+<p>We <code>fetch</code> <code>Entries</code> whenever <code>AwsmBar</code> <code>Entry</code>&rsquo;s <code>fuzz</code> changes</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">searchForEntries: </span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">fuzz</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nv">query = </span><span class="nx">model</span><span class="p">.</span><span class="nx">getChompedFuzz</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>If there&rsquo;s something inside <code>fuzz</code>, we pass the <code>query</code> on as <code>_Es</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="nx">query</span> <span class="o">isnt</span> <span class="s">&#39;&#39;</span>
+      <span class="nv">options =</span>
+        <span class="nv">data:</span>
+          <span class="nv">_Es: </span><span class="nx">query</span>
+          <span class="nv">_El: </span><span class="s">&#39;off&#39;</span>
+      <span class="nv">options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">@getFetchErrorOptions</span><span class="p">()</span>
+      <span class="nx">@entries</span><span class="p">.</span><span class="nx">fetch</span> <span class="nx">options</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>Otherwise we make a clean <code>fetch</code> without a limit (<code>_El</code>)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">else</span>
+      <span class="nx">@entries</span><span class="p">.</span><span class="nx">fetch</span> <span class="nx">@getFetchRequestOptions</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Rendering'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Rendering">&#182;</a>
+        </div>
+        <h3>Rendering</h3>
+
+<p>Merely clears the <code>el</code> that holds <code>Agenda</code> and appends all the sub-views</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">render: </span><span class="o">=&gt;</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">()</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@awsmBar</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">@entriesView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Render_callback'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Render_callback">&#182;</a>
+        </div>
+        <h3>Render callback</h3>
+
+<p>Initialize <code>AwsmBar</code> after it was appended to the <code>DOM</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onRendered: </span><span class="o">=&gt;</span>
+    <span class="nx">@awsmBar</span><span class="p">.</span><span class="nx">onRendered</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Fetch_Options'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Fetch_Options">&#182;</a>
+        </div>
+        <h3>Fetch Options</h3>
+
+<p>For now all the requests ask for the entire list of <code>Entries</code> so we return a simple params hash (<code>_El</code> stands for limit).</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">getFetchRequestOptions: </span><span class="o">-&gt;</span>
+    <span class="p">{</span>
+      <span class="nv">data:</span>
+        <span class="nv">_El: </span><span class="s">&#39;off&#39;</span>
+    <span class="p">}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>We use a uniform fetch options hash that handles <code>JSONP</code> errors. The returned hash contains functions that will handle errors, and are bound to scope of the <code>Agenda</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">getFetchErrorOptions: </span><span class="o">-&gt;</span>
+    <span class="p">{</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>Sometimes the header state is <code>200 OK</code> and the error is communicated via <code>JSON</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="nv">success: </span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span>
+          <span class="nx">@onFetchError</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-18'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-18">&#182;</a>
+        </div>
+        <p>Timeouts are routed to <code>error</code> as they should</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="nv">error: </span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#fetchErrorOptions.error&#39;</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">resp</span>
+        <span class="nv">resp = error: </span><span class="s">&#39;Timeout&#39;</span>
+        <span class="nx">@onFetchError</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span>
+    <span class="p">}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Sync_error_handling'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Sync_error_handling">&#182;</a>
+        </div>
+        <h3>Sync error handling</h3>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onFetchError: </span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nx">resp</span> <span class="o">||=</span> <span class="nv">error: </span><span class="s">&#39;&#39;</span>
+    <span class="k">switch</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">error</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-20'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-20">&#182;</a>
+        </div>
+        <p>In case we&rsquo;re not authenticated, we want to send the user to a <code>login</code> page</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">when</span> <span class="s">&#39;Failed user auth&#39;</span>
+        <span class="nx">MM</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">resetSession</span><span class="p">()</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">defer</span> <span class="o">-&gt;</span>
+          <span class="nx">MM</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">navigate</span><span class="p">(</span><span class="s">&#39;login&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-21'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p>Otherwise we show a descriptive error message</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">when</span> <span class="s">&#39;Timeout&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
+        </div>
+        <p>Perhaps we should consider capturing <code>Timeouts</code> globally, or even working with an intermediary local <code>Sync</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#onFetchError&#39;</span><span class="p">,</span> <span class="s">&#39;Timeout&#39;</span>
+      <span class="k">else</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#onFetchError&#39;</span><span class="p">,</span> <span class="s">&#39;Unknown Error&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Proxy'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Proxy">&#182;</a>
+        </div>
+        <h3>Proxy</h3>
+
+<p>Handy method</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">focusAwsmBar: </span><span class="o">-&gt;</span>
+    <span class="nx">@awsmBar</span><span class="p">.</span><span class="nx">focus</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

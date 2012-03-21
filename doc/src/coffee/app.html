@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>app.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="app.html">app.coffee</a>
+          <a class="source" href="meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="meanxy/query.html">query.coffee</a>
+          <a class="source" href="meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="models/concepts.html">concepts.coffee</a>
+          <a class="source" href="models/entries.html">entries.coffee</a>
+          <a class="source" href="models/session.html">session.coffee</a>
+          <a class="source" href="models/syncs.html">syncs.coffee</a>
+          <a class="source" href="models/workflows.html">workflows.coffee</a>
+          <a class="source" href="views/agenda.html">agenda.coffee</a>
+          <a class="source" href="views/awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="views/entries.html">entries.coffee</a>
+          <a class="source" href="views/landing.html">landing.coffee</a>
+          <a class="source" href="views/login.html">login.coffee</a>
+          <a class="source" href="views/meanxy.html">meanxy.coffee</a>
+          <a class="source" href="views/nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>app.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-middlemachine_App_Router'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-middlemachine_App_Router">&#182;</a>
+        </div>
+        <h1>middlemachine App Router</h1>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Responds to <code>routes</code> and instantiates appropriate <code>Views</code></p>
+
+<ul>
+<li><code>landing</code> &ndash; The greeting page for new and returning users of <em>middlemachine</em></li>
+<li><code>agenda</code> &ndash; The main <code>View</code> of <em>middlemachine</em> used for creating, editing and filtering <code>Entries</code></li>
+<li><code>meanxy</code> &ndash; Tile-based interface for exploring <code>Concepts</code></li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">App</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span>
+  <span class="nv">routes:</span>
+    <span class="s">&#39;&#39;</span>              <span class="o">:</span> <span class="s">&#39;redirect&#39;</span>
+    <span class="s">&#39;landing&#39;</span>       <span class="o">:</span> <span class="s">&#39;landing&#39;</span>
+    <span class="s">&#39;agenda&#39;</span>        <span class="o">:</span> <span class="s">&#39;agenda&#39;</span>
+    <span class="s">&#39;meanxy&#39;</span>        <span class="o">:</span> <span class="s">&#39;meanxy&#39;</span>
+    <span class="s">&#39;login&#39;</span>         <span class="o">:</span> <span class="s">&#39;login&#39;</span>
+  </pre></div>
+      </td>
+    </tr>
+    <tr id='section-Landing'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Landing">&#182;</a>
+        </div>
+        <h2>Landing</h2>
+
+<ul>
+<li>doesn&rsquo;t show the main <code>Nav</code></li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">landing: </span><span class="o">-&gt;</span>
+    <span class="vi">@view = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Landing</span><span class="p">()</span>
+    <span class="nx">@$stage</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@nav</span><span class="p">.</span><span class="nx">hide</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Login'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Login">&#182;</a>
+        </div>
+        <h2>Login</h2>
+
+<ul>
+<li>doesn&rsquo;t show the main <code>Nav</code></li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">login: </span><span class="o">-&gt;</span>
+    <span class="vi">@view = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Login</span><span class="p">()</span>
+    <span class="nx">@$stage</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+    <span class="nx">@nav</span><span class="p">.</span><span class="nx">hide</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Agenda'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Agenda">&#182;</a>
+        </div>
+        <h2>Agenda</h2>
+
+<ul>
+<li>requires a <code>Session</code> token</li>
+<li>needs to know when it was appended to the <code>DOM</code></li>
+<li>shows <code>Nav</code></li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">agenda: </span><span class="o">-&gt;</span>
+    <span class="nx">@ensureSession</span><span class="p">()</span>
+
+    <span class="vi">@view = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Agenda</span><span class="p">()</span>
+    <span class="nx">@$stage</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>    
+    <span class="nx">@view</span><span class="p">.</span><span class="nx">onRendered</span><span class="p">()</span>
+
+    <span class="nx">@nav</span><span class="p">.</span><span class="nx">show</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-MeanXY'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-MeanXY">&#182;</a>
+        </div>
+        <h2>MeanXY</h2>
+
+<ul>
+<li>requires a <code>Session</code> token</li>
+<li>shows <code>Nav</code></li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">meanxy: </span><span class="o">-&gt;</span>
+    <span class="nx">@ensureSession</span><span class="p">()</span>
+
+    <span class="nv">tiles = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">TileCollection</span><span class="p">()</span>
+    <span class="vi">@view = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Tiles</span> <span class="nv">collection: </span><span class="nx">tiles</span>
+    <span class="nx">@$el</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+
+    <span class="nx">@nav</span><span class="p">.</span><span class="nx">show</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Redirect'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Redirect">&#182;</a>
+        </div>
+        <h2>Redirect</h2>
+
+<p>When the user arrives to the root path, they&rsquo;re redirected depending on whether they&rsquo;re logged in or not</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">redirect: </span><span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">isLoaded</span><span class="p">()</span>
+      <span class="nx">@navigate</span><span class="p">(</span><span class="s">&#39;agenda&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="nx">@navigate</span><span class="p">(</span><span class="s">&#39;landing&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Initialize'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Initialize">&#182;</a>
+        </div>
+        <h2>Initialize</h2>
+
+<p>We start by assigning the <code>DOM</code> elements to local variables, initializing and rendering the <code>Nav</code> view and creating or loading the <code>Session</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">initialize: </span><span class="o">-&gt;</span>
+    <span class="nx">@assignDOMElements</span><span class="p">()</span>
+    <span class="nx">@initNav</span><span class="p">()</span>
+    <span class="nx">@initSession</span><span class="p">()</span>
+    <span class="nx">@initWorkflows</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Utility_Methods'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Utility_Methods">&#182;</a>
+        </div>
+        <h2>Utility Methods</h2>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>Local variables for easy, cached access</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">assignDOMElements: </span><span class="o">-&gt;</span>
+    <span class="vi">@$app = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#app&#39;</span><span class="p">)</span>
+    <span class="vi">@$nav = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#views-navbar&#39;</span><span class="p">)</span>
+    <span class="vi">@$stage = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#stage&#39;</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p><code>Nav</code> view</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">initNav: </span><span class="o">-&gt;</span>
+    <span class="vi">@nav = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">Nav</span><span class="p">()</span>
+    <span class="nx">@$nav</span><span class="p">.</span><span class="nx">html</span> <span class="nx">@nav</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+  </pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>Workflows</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">initWorkflows: </span><span class="o">-&gt;</span>
+    <span class="nx">unless</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">workflows</span>
+      <span class="nv">MM.workflows = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Workflows</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p><code>Session</code> model</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">initSession: </span><span class="o">-&gt;</span>
+    <span class="nx">unless</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span>
+      <span class="nv">MM.session = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Session</span><span class="p">()</span>
+    <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;change:token&#39;</span><span class="p">,</span> <span class="nx">@onTokenChanged</span>
+  <span class="nv">resetSession: </span><span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span>
+      <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="kc">off</span> <span class="s">&#39;change:token&#39;</span><span class="p">,</span> <span class="nx">@onTokenChanged</span>
+      <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">deleteCookie</span><span class="p">()</span>
+      <span class="k">delete</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span>
+    <span class="nv">MM.session = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Session</span><span class="p">()</span>
+    <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;change:token&#39;</span><span class="p">,</span> <span class="nx">@onTokenChanged</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>We can navigate to <code>Agenda</code> once we get the <code>Session</code> token</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">onTokenChanged: </span><span class="o">=&gt;</span>
+    <span class="nx">@navigate</span><span class="p">(</span><span class="s">&#39;agenda&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>We send the user to the <code>landing</code> page in case the <code>Session</code> isn&rsquo;t loaded</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">ensureSession: </span><span class="o">-&gt;</span>
+    <span class="nx">unless</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">isLoaded</span><span class="p">()</span>
+      <span class="nx">@navigate</span><span class="p">(</span><span class="s">&#39;landing&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

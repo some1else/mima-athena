@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>_legacy.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="_legacy.html">_legacy.coffee</a>
+          <a class="source" href="_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="query.html">query.coffee</a>
+          <a class="source" href="tile.html">tile.coffee</a>
+          <a class="source" href="../models/concepts.html">concepts.coffee</a>
+          <a class="source" href="../models/entries.html">entries.coffee</a>
+          <a class="source" href="../models/session.html">session.coffee</a>
+          <a class="source" href="../models/syncs.html">syncs.coffee</a>
+          <a class="source" href="../models/workflows.html">workflows.coffee</a>
+          <a class="source" href="../views/agenda.html">agenda.coffee</a>
+          <a class="source" href="../views/awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="../views/entries.html">entries.coffee</a>
+          <a class="source" href="../views/landing.html">landing.coffee</a>
+          <a class="source" href="../views/login.html">login.coffee</a>
+          <a class="source" href="../views/meanxy.html">meanxy.coffee</a>
+          <a class="source" href="../views/nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>_legacy.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span> <span class="o">||=</span> <span class="p">{}</span>
+
+<span class="nv">columns = </span><span class="mi">5</span>
+<span class="nv">rows = </span><span class="mi">3</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Queries = BreadcrumbsView = Tiles = TilesView = Entries = EntriesView = MeanXY = null
+server = user = path = null</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">knot =</span>
+  <span class="nv">type: </span><span class="s">&quot;knot query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;§&quot;</span>
+
+<span class="nv">launchpad = entities: </span><span class="p">[</span>
+  <span class="nv">type: </span><span class="s">&quot;person query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;+&quot;</span>
+  <span class="nv">x: </span><span class="mi">0</span><span class="p">,</span> <span class="nv">y: </span><span class="mi">1</span>
+<span class="p">,</span>
+  <span class="nv">type: </span><span class="s">&quot;delegate_in query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;&lt;&quot;</span>
+  <span class="nv">x: </span><span class="mi">0</span><span class="p">,</span> <span class="nv">y: </span><span class="mi">0</span>
+<span class="p">,</span>
+  <span class="nv">type: </span><span class="s">&quot;delegate_out query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;&gt;&quot;</span>
+  <span class="nv">x: </span><span class="mi">1</span><span class="p">,</span> <span class="nv">y: </span><span class="mi">0</span>
+<span class="p">,</span>
+  <span class="nv">type: </span><span class="s">&quot;tag query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;</span><span class="err">#</span><span class="s">&quot;</span>
+  <span class="nv">x: </span><span class="nx">columns</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">y: </span><span class="mi">0</span>
+<span class="p">,</span>
+  <span class="nv">type: </span><span class="s">&quot;place query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;@&quot;</span>
+  <span class="nv">x: </span><span class="mi">2</span><span class="p">,</span> <span class="nv">y: </span><span class="nx">rows</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="p">,</span>
+  <span class="nv">type: </span><span class="s">&quot;time query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;~&quot;</span>
+  <span class="nv">x: </span><span class="nx">columns</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="nv">y: </span><span class="nx">rows</span> <span class="o">-</span> <span class="mi">2</span>
+<span class="p">,</span>
+  <span class="nv">type: </span><span class="s">&quot;knot query&quot;</span><span class="p">,</span> <span class="nv">label: </span><span class="s">&quot;§&quot;</span>
+  <span class="nv">x: </span><span class="nx">columns</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">y: </span><span class="nx">rows</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="p">]</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryModel</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span>
+  <span class="nv">defaults:</span>
+    <span class="s">&#39;text&#39;</span><span class="o">:</span> <span class="s">&quot;...&quot;</span>
+    <span class="nv">description: </span><span class="s">&quot;...&quot;</span>
+    <span class="nv">prettytime: </span><span class="s">&quot;now&quot;</span>
+    <span class="nv">url: </span><span class="s">&quot;</span><span class="err">#</span><span class="s">&quot;</span>
+
+  <span class="nv">parse: </span><span class="nf">(om) -&gt;</span>
+    <span class="nv">om =</span>
+      <span class="nv">text: </span><span class="nx">om</span><span class="p">.</span><span class="nx">text</span>
+      <span class="nv">description: </span><span class="nx">om</span><span class="p">.</span><span class="nx">description</span>
+      <span class="nv">prettytime: </span><span class="nx">om</span><span class="p">.</span><span class="nx">prettytimecreated</span>
+      <span class="nv">url: </span><span class="nx">om</span><span class="p">.</span><span class="nx">url</span>
+
+    <span class="nx">om</span>
+
+  <span class="nv">initialize: </span><span class="nf">(obj) -&gt;</span>
+    <span class="nx">@set</span> <span class="nx">@parse</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryCollection</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span>
+  <span class="nv">model: </span><span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryModel</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryView</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">template: </span><span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s">&quot;&lt;div class=&#39;entry&#39;&gt;&quot;</span> <span class="o">+</span> <span class="s">&quot;&lt;h1&gt;&lt;a href=&#39;&lt;%= url %&gt;&#39;&gt;&lt;%= text %&gt;&lt;/a&gt;&lt;/h1&gt;&quot;</span> <span class="o">+</span> <span class="s">&quot;&lt;p&gt;&lt;%= description %&gt;(&lt;em&gt;&lt;%= prettytime %&gt;&lt;/em&gt;)&lt;/p&gt;&quot;</span> <span class="o">+</span> <span class="s">&quot;&lt;/div&gt;&quot;</span><span class="p">)</span>
+  <span class="nv">render: </span><span class="o">-&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">@el</span><span class="p">).</span><span class="nx">html</span> <span class="nx">@template</span><span class="p">(</span><span class="nx">@model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">)</span>
+    <span class="k">this</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryCollectionView</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">el: </span><span class="s">&quot;</span><span class="err">#</span><span class="s">entries&quot;</span>
+  <span class="nv">reset: </span><span class="o">-&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">entries&quot;</span><span class="p">).</span><span class="nx">empty</span><span class="p">()</span>
+    <span class="nx">Entries</span><span class="p">.</span><span class="nx">each</span> <span class="nf">(entry) -&gt;</span>
+      <span class="nv">view = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryView</span><span class="p">(</span><span class="nv">model: </span><span class="nx">entry</span><span class="p">)</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">entries&quot;</span><span class="p">).</span><span class="nx">append</span> <span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span>
+
+  <span class="nv">initialize: </span><span class="o">-&gt;</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="k">this</span><span class="p">,</span> <span class="s">&quot;reset&quot;</span>
+    <span class="nx">Entries</span><span class="p">.</span><span class="nx">bind</span> <span class="s">&quot;reset&quot;</span><span class="p">,</span> <span class="nx">@reset</span><span class="p">,</span> <span class="k">this</span>
+
+<span class="nv">jax = </span><span class="nf">(path, data, silent) -&gt;</span>
+  <span class="k">if</span> <span class="nb">window</span><span class="p">.</span><span class="nx">TOKEN</span> <span class="o">is</span> <span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+    <span class="nv">data.secret = </span><span class="s">&quot;admin123&quot;</span>
+  <span class="k">else</span>
+    <span class="nv">data.access_token = </span><span class="nb">window</span><span class="p">.</span><span class="nx">TOKEN</span>
+  <span class="nv">dt = </span><span class="s">&quot;&quot;</span>
+  <span class="nx">unless</span> <span class="nx">silent</span> <span class="o">is</span> <span class="kc">true</span>
+    <span class="nv">dt = </span><span class="s">&quot;jsonp&quot;</span>
+    <span class="k">if</span> <span class="nx">path</span> <span class="o">is</span> <span class="s">&quot;relevant&quot;</span>
+      <span class="nv">data.json_callback = </span><span class="s">&quot;_relevant_jsonp&quot;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="nx">path</span> <span class="o">is</span> <span class="s">&quot;knot&quot;</span>
+      <span class="nv">path = </span><span class="s">&quot;entry&quot;</span>
+      <span class="nv">data.json_callback = </span><span class="s">&quot;_knot_jsonp&quot;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="nx">path</span> <span class="o">is</span> <span class="s">&quot;entries&quot;</span>
+      <span class="nv">data.json_callback = </span><span class="s">&quot;_entries_jsonp&quot;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="nx">path</span> <span class="o">is</span> <span class="s">&quot;type&quot;</span>
+      <span class="nv">data.json_callback = </span><span class="s">&quot;_type_jsonp&quot;</span>
+      <span class="nv">path = </span><span class="s">&quot;relevant&quot;</span>
+  <span class="k">else</span>
+    <span class="nv">dt = </span><span class="s">&quot;json&quot;</span>
+  <span class="nv">url = </span><span class="s">&quot;http://&quot;</span> <span class="o">+</span> <span class="nx">server</span> <span class="o">+</span> <span class="s">&quot;/BTW/&quot;</span> <span class="o">+</span> <span class="nx">path</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="nx">user</span>
+  <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="nv">dataType: </span><span class="nx">dt</span>
+    <span class="nv">data: </span><span class="nx">data</span>
+
+<span class="nv">doQuery = </span><span class="nf">(model) -&gt;</span>
+  <span class="nx">Queries</span><span class="p">.</span><span class="nx">add</span> <span class="nx">model</span>  <span class="k">if</span> <span class="nx">model</span>
+  <span class="nv">data = q: </span><span class="nx">Queries</span><span class="p">.</span><span class="nx">asQueryParam</span><span class="p">()</span>
+  <span class="nv">data.limit = </span><span class="nx">columns</span> <span class="o">*</span> <span class="nx">rows</span>
+  <span class="nx">jax</span> <span class="s">&quot;relevant&quot;</span><span class="p">,</span> <span class="nx">data</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nv">_relevant_jsonp = </span><span class="nf">(response) -&gt;</span>
+  <span class="k">if</span> <span class="nx">response</span><span class="p">.</span><span class="nx">error</span>
+    <span class="nv">resp = </span><span class="p">[]</span>
+  <span class="k">else</span>
+    <span class="nv">resp = </span><span class="nx">response</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">columns</span> <span class="o">*</span> <span class="nx">rows</span> <span class="o">-</span> <span class="nx">launchpad</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+  <span class="nv">resp = </span><span class="nx">resp</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">launchpad</span><span class="p">.</span><span class="nx">entities</span><span class="p">)</span>
+  <span class="nx">Tiles</span><span class="p">.</span><span class="nx">reset</span> <span class="nx">resp</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">meta&quot;</span><span class="p">).</span><span class="nx">html</span> <span class="nx">response</span><span class="p">.</span><span class="nx">meta</span>
+
+<span class="nv">doTypeQuery = </span><span class="nf">(model) -&gt;</span>
+  <span class="nx">Queries</span><span class="p">.</span><span class="nx">add</span> <span class="nx">model</span>
+  <span class="nv">data =</span>
+    <span class="nv">type: </span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&quot;kind&quot;</span><span class="p">).</span><span class="nx">toUpperCase</span><span class="p">()</span>
+    <span class="nv">limit: </span><span class="nx">columns</span> <span class="o">*</span> <span class="nx">rows</span>
+
+  <span class="nv">qs = </span><span class="nx">Queries</span><span class="p">.</span><span class="nx">asQueryParam</span><span class="p">()</span>
+  <span class="nv">data.q = </span><span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nx">qs</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">then</span> <span class="nx">qs</span> <span class="k">else</span> <span class="o">`</span><span class="kc">undefined</span><span class="o">`</span><span class="p">)</span>
+  <span class="nx">jax</span> <span class="s">&quot;type&quot;</span><span class="p">,</span> <span class="nx">data</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nv">_type_jsonp = </span><span class="nf">(response) -&gt;</span>
+  <span class="nv">entities = </span><span class="kc">undefined</span>
+  <span class="k">if</span> <span class="nx">response</span><span class="p">.</span><span class="nx">error</span>
+    <span class="nv">entities = </span><span class="nx">launchpad</span>
+  <span class="k">else</span>
+    <span class="nv">entities = </span><span class="nx">response</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="nx">columns</span> <span class="o">*</span> <span class="nx">rows</span><span class="p">))</span>
+  <span class="nx">Tiles</span><span class="p">.</span><span class="nx">reset</span> <span class="nx">entities</span>
+
+<span class="nv">doKnotQuery = </span><span class="o">-&gt;</span>
+  <span class="nv">data = add: </span><span class="nx">Queries</span><span class="p">.</span><span class="nx">asFuzztleText</span><span class="p">()</span>
+  <span class="nx">jax</span> <span class="s">&quot;knot&quot;</span><span class="p">,</span> <span class="nx">data</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nv">_knot_jsonp = </span><span class="nf">(response) -&gt;</span>
+  <span class="nx">Queries</span><span class="p">.</span><span class="nx">reset</span><span class="p">()</span>
+  <span class="nx">doQuery</span><span class="p">()</span>
+
+<span class="nv">resetSession = </span><span class="o">-&gt;</span>
+  <span class="nx">Queries</span><span class="p">.</span><span class="nx">reset</span><span class="p">()</span>
+  <span class="nv">data = reset: </span><span class="s">&quot;true&quot;</span>
+  <span class="nx">jax</span> <span class="s">&quot;relevant&quot;</span><span class="p">,</span> <span class="nx">data</span>
+  <span class="nx">Tiles</span><span class="p">.</span><span class="nx">reset</span> <span class="nx">static_launchpad</span><span class="p">.</span><span class="nx">entities</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">reset&quot;</span><span class="p">).</span><span class="nx">click</span> <span class="nf">(e) -&gt;</span>
+  <span class="nx">resetSession</span><span class="p">()</span>
+
+
+
+<span class="nv">MM.MeanXY.factory = </span><span class="o">-&gt;</span>
+    <span class="nv">Queries = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">QueryCollection</span><span class="p">()</span>
+    <span class="nv">BreadcrumbsView = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">BreadcrumbCollectionView</span><span class="p">()</span>
+    <span class="nv">Tiles = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">TileCollection</span><span class="p">()</span>
+    <span class="nv">TilesView = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">TileCollectionView</span><span class="p">()</span>
+    <span class="nv">Entries = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryCollection</span><span class="p">()</span>
+    <span class="nv">EntriesView = </span><span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">MeanXY</span><span class="p">.</span><span class="nx">EntryCollectionView</span><span class="p">()</span>
+
+    <span class="nx">doQuery</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>$ &ndash;&gt;
+  server = (if window.SERVER<em>URI then window.SERVER</em>URI else &ldquo;www.middlemachine.com/BTW&rdquo;)
+  if window.SERVER<em>URI
+    if window.SERVER</em>PORT
+      server = window.SERVER<em>URI + &ldquo;:&rdquo; + window.SERVER</em>PORT
+    else
+      server = window.SERVER_URI
+  username = (if window.USERNAME then window.USERNAME else $(&ldquo;#username&rdquo;).val())</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>meanxy = new MM.MeanXY.Factory()</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  </pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

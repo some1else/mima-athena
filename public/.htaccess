@@ -1,0 +1,11 @@
+RewriteEngine on
+RewriteRule ^agenda index.html
+RewriteRule ^agenda/ index.html
+RewriteRule ^meanxy index.html
+RewriteRule ^meanxy/ index.html
+RewriteRule ^login index.html
+RewriteRule ^login/ index.html
+RewriteRule ^logout index.html
+RewriteRule ^logout/ index.html
+RewriteRule ^landing index.html
+RewriteRule ^landing/ index.html

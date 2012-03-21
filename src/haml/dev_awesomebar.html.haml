@@ -1,0 +1,87 @@
+%html
+    %head
+        %title Awesomebar
+
+        %meta{:charset => 'utf8'}
+
+        %script{:src => 'js/lib/jquery-1.7.1.js'}
+        %script{:src => 'js/lib/jquery.md5.js'}
+        %script{:src => 'js/lib/json2.js'}
+        %script{:src => 'js/lib/underscore.js'}
+        %script{:src => 'js/lib/backbone.js'}
+
+        %script{:src => 'js/sync.js'}
+        %script{:src => 'js/session.js'}
+
+        %script{:src => 'js/concepts.js'}
+        %script{:src => 'js/entries.js'}
+
+        %script{:src => 'js/login.js'}
+        %script{:src => 'js/awsmbar.js'}
+        %script{:src => 'js/meanxy.js'}
+
+        %link{:rel => 'stylesheet', :href => 'css/lib/bootstrap.css'}
+        %link{:rel => 'stylesheet', :href => 'css/awsmbar.css'}
+    %body
+        :javascript
+            $(function() {
+                if (!window.MM.session) {
+                    window.MM.session = new MM.Session()
+                }
+                var login = new MM.Login({login: 's1e', password: 'admin123'})
+
+                var $loginForm = $('#loginForm').first()
+                var loginForm = new MM.Views.LoginSignupForm({el: $loginForm, model: login})
+
+                var entry = new MM.Entry({fuzz: ''})
+                $awesomeBar = $('#awesomeBar')
+                window.awsmBar = new MM.AwsmBar.Views.Edit({model: entry, el: $awesomeBar})
+
+                //var related = new MM.MeanXY.TileCollection()
+                var entries = new MM.Entries()
+                entries.fetch()
+
+                console.log('$document.ready', 'EOF')
+                
+                MM.session.on('change:token', function(){
+                    //console.log("SNIP")
+                    $loginForm.hide()
+                })
+            })
+        #app
+            %nav.navbar
+                .navbar-inner
+                    %ul.nav
+                        %li
+                            %a{:href => 'agenda'} Agenda
+                        %li
+                            %a{:href => 'meanxy'} MeanXY
+                        %li
+                            %a{:href => 'logout'} Log out
+
+            %section#loginForm
+            %section#stage
+                #awesomeBar
+                #entries
+            %aside#aux
+                %section#aims
+                %section#contacts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>syncs.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="concepts.html">concepts.coffee</a>
+          <a class="source" href="entries.html">entries.coffee</a>
+          <a class="source" href="session.html">session.coffee</a>
+          <a class="source" href="syncs.html">syncs.coffee</a>
+          <a class="source" href="workflows.html">workflows.coffee</a>
+          <a class="source" href="../views/agenda.html">agenda.coffee</a>
+          <a class="source" href="../views/awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="../views/entries.html">entries.coffee</a>
+          <a class="source" href="../views/landing.html">landing.coffee</a>
+          <a class="source" href="../views/login.html">login.coffee</a>
+          <a class="source" href="../views/meanxy.html">meanxy.coffee</a>
+          <a class="source" href="../views/nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>syncs.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-MM.Sync'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-MM.Sync">&#182;</a>
+        </div>
+        <h1>MM.Sync</h1>
+
+<p>Handles syncing via <code>JSONP</code>
+Reimplements <code>Backbone.sync</code> as <code>MM.CoreSync</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span> <span class="o">||=</span> <span class="p">{}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>The URL is not canonical, but it is mandatory, because all
+Collections and Models construct their paths from it.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.URL = </span><span class="s">&#39;http://193.9.21.195:8999/BTW&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Stub'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Stub">&#182;</a>
+        </div>
+        <h2>Stub</h2>
+
+<p>An example of a stubbed <code>Sync</code> method, that returns a predefined <code>Array</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.Stub = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nx">options</span><span class="p">.</span><span class="nx">succes</span> <span class="p">[</span>
+    <span class="nv">id: </span><span class="s">&#39;1&#39;</span>
+    <span class="nv">value: </span><span class="s">&#39;foo&#39;</span>
+  <span class="p">,</span>
+    <span class="nv">id: </span><span class="s">&#39;2&#39;</span>
+    <span class="nv">value: </span><span class="s">&#39;bar&#39;</span>
+  <span class="p">]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Session'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Session">&#182;</a>
+        </div>
+        <h2>Session</h2>
+
+<p>The <code>Session</code> uses <code>GET</code> rather than <code>POST</code> to instantiate</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.Session = </span><span class="nf">(method, model, options) -&gt;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>Converting model toJSON here prevents <code>params.data</code> being <code>JSON.stringify()</code>&rsquo;d in <code>Backbone.sync</code>, which messes up the the params in <code>GET</code> requests :-O</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">options.data = </span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>Remove sensitive data</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">delete</span> <span class="nx">options</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">token</span>
+  <span class="k">delete</span> <span class="nx">options</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">real_name</span>
+  <span class="k">delete</span> <span class="nx">options</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">login</span>
+  <span class="k">delete</span> <span class="nx">options</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">account</span>
+
+  <span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">JSONP</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Entries_Collection'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Entries_Collection">&#182;</a>
+        </div>
+        <h2>Entries Collection</h2>
+
+<ul>
+<li>appends access_token from session data</li>
+</ul>
+
+<p>URLs for <code>Entries</code> vary depending on the <code>method</code>, and are customized with <code>options.url</code> before passing on to <code>Backbone.Sync</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.Entries = </span><span class="nf">(method, model, options) -&gt;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p><code>Entries#url</code> recieves the <code>method</code> to reflect upon</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">options.url = </span><span class="nx">model</span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="nx">method</span><span class="p">)</span>
+  <span class="nx">options</span><span class="p">.</span><span class="nx">data</span> <span class="o">||=</span> <span class="p">{}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>New <code>Entry</code> is signified by an <code>add</code> param rather than merely being a <code>POST</code> request with <code>Entry.fuzz</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">switch</span> <span class="nx">method</span>
+    <span class="k">when</span> <span class="s">&#39;create&#39;</span>
+      <span class="nv">options.data =</span>
+        <span class="nv">add: </span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fuzz&#39;</span><span class="p">)</span>
+    <span class="k">when</span> <span class="s">&#39;delete&#39;</span>
+      <span class="nv">options.data =</span>
+        <span class="nv">eid: </span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+        <span class="nv">action: </span><span class="s">&#39;delete&#39;</span>
+    <span class="k">when</span> <span class="s">&#39;update&#39;</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="nx">model</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">model</span><span class="p">.</span><span class="nx">changed</span>
+      <span class="nv">options.data =</span>
+        <span class="nv">eid: </span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+        <span class="nv">status: </span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;status&#39;</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>Access token from session instance</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">options.data.access_token = </span><span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>options.processData = true</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">JSONP</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Entry.RelevantConcepts'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Entry.RelevantConcepts">&#182;</a>
+        </div>
+        <h2>Entry.RelevantConcepts</h2>
+
+<ul>
+<li>appends access_token from session data</li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.RelevantConcepts = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nx">options</span><span class="p">.</span><span class="nx">data</span> <span class="o">||=</span> <span class="p">{}</span>
+  <span class="nv">options.data.access_token = </span><span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
+
+  <span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">JSONP</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Entry.SuggestedConcepts'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Entry.SuggestedConcepts">&#182;</a>
+        </div>
+        <h2>Entry.SuggestedConcepts</h2>
+
+<ul>
+<li>appends access_token from session data</li>
+</ul>
+
+<p>Right now all the <code>Concepts</code> are requested at once, when the application starts. In future, this <code>Sync</code> will submit a <code>queryString</code> (<code>qs</code>) and <code>caretPosition</code> (<code>pos</code>), to facilitate auto-completion of an <code>Entry.fuzz</code> during interaction within <code>AwsmBar</code> </p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.SuggestedConcepts = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nx">options</span><span class="p">.</span><span class="nx">data</span> <span class="o">||=</span> <span class="p">{}</span>
+  <span class="nv">options.data.access_token = </span><span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
+
+  <span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">JSONP</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Workflows'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Workflows">&#182;</a>
+        </div>
+        <h2>Workflows</h2>
+
+<ul>
+<li>appends access_token from session data</li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.Workflows = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nx">options</span><span class="p">.</span><span class="nx">data</span> <span class="o">||=</span> <span class="p">{}</span>
+  <span class="nv">options.data.access_token = </span><span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
+
+  <span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">JSONP</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-MeanXY.TileCollection'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-MeanXY.TileCollection">&#182;</a>
+        </div>
+        <h2>MeanXY.TileCollection</h2>
+
+<ul>
+<li>appends access_token from session data</li>
+</ul>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.MeanXY = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nx">options</span><span class="p">.</span><span class="nx">data</span> <span class="o">||=</span> <span class="p">{}</span>
+  <span class="nv">options.data.access_token = </span><span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
+
+  <span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">JSONP</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-JSONP_Sync'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-JSONP_Sync">&#182;</a>
+        </div>
+        <h2>JSONP Sync</h2>
+
+<p>This method decorates the sync request with <code>JSONP</code> relevant options and proxies to <code>CoreSync</code></p>
+
+<p>Timeout is required for 404 responses because of <code>JSONP</code> and a custom callback name (<code>json_callback</code>) is used so the server can identify <code>JSONP</code> requests</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.JSONP = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nv">options.dataType = </span><span class="s">&#39;jsonp&#39;</span>
+  <span class="nv">options.timeout = </span><span class="mi">10000</span> </pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p><code>jQuery.ajax</code> uses this to define the <code>callback</code> name</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">options.jsonp = </span><span class="s">&#39;json_callback&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-18'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-18">&#182;</a>
+        </div>
+        <p><code>jQuery.jsonp</code> uses this to define the <code>callback</code> name</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">options.callbackParameter = </span><span class="s">&#39;json_callback&#39;</span>
+  <span class="nv">options.callback = </span><span class="s">&#39;_jqjsp&#39;</span>
+  <span class="nx">MM</span><span class="p">.</span><span class="nx">CoreSync</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Core_Sync'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Core_Sync">&#182;</a>
+        </div>
+        <h2>Core Sync</h2>
+
+<p>Reimplementation of <code>Backbone.Sync</code> to handle some exceptions where <code>sync</code> proxies want to set <code>params.data</code> to something other than <code>model.toJSON()</code></p>
+
+<p><code>Backbone.Sync</code> will undo <code>options.processData</code> depending on the <code>method</code> of the request and the <code>Backbone.emulateJSON</code> option. This might have other implications though. This is the thing to look at if <code>params.data</code> isn&rsquo;t being evaluated or escaped properly.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">Backbone.emulateJSON = </span><span class="kc">true</span>
+
+<span class="nv">MM.CoreSync = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nv">type = </span><span class="nx">methodMap</span><span class="p">[</span><span class="nx">method</span><span class="p">]</span>
+  <span class="nv">params =</span>
+    <span class="nv">type: </span><span class="nx">type</span>
+    <span class="nv">dataType: </span><span class="s">&quot;json&quot;</span>
+  <span class="nv">params.url = </span><span class="nx">getValue</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="s">&quot;url&quot;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">urlError</span><span class="p">()</span>  <span class="nx">unless</span> <span class="nx">options</span><span class="p">.</span><span class="nx">url</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-20'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-20">&#182;</a>
+        </div>
+        <p><code>params.data</code> shouldn&rsquo;t be set if we have <code>options.data</code> to work with</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">if</span> <span class="o">not</span> <span class="nx">options</span><span class="p">.</span><span class="nx">data</span> <span class="o">and</span> <span class="nx">model</span> <span class="o">and</span> <span class="p">(</span><span class="nx">method</span> <span class="o">is</span> <span class="s">&quot;create&quot;</span> <span class="o">or</span> <span class="nx">method</span> <span class="o">is</span> <span class="s">&quot;update&quot;</span><span class="p">)</span>
+    <span class="nv">params.contentType = </span><span class="s">&quot;application/json&quot;</span>
+    <span class="nv">params.data = </span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">())</span>
+  <span class="k">if</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">emulateJSON</span>
+    <span class="nv">params.contentType = </span><span class="s">&quot;application/x-www-form-urlencoded&quot;</span>
+    <span class="nv">params.data = </span><span class="p">(</span><span class="k">if</span> <span class="nx">params</span><span class="p">.</span><span class="nx">data</span> <span class="k">then</span> <span class="nv">model: </span><span class="nx">params</span><span class="p">.</span><span class="nx">data</span> <span class="k">else</span> <span class="p">{})</span>
+  <span class="k">if</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">emulateHTTP</span>
+    <span class="k">if</span> <span class="nx">type</span> <span class="o">is</span> <span class="s">&quot;PUT&quot;</span> <span class="o">or</span> <span class="nx">type</span> <span class="o">is</span> <span class="s">&quot;DELETE&quot;</span>
+      <span class="nv">params.data._method = </span><span class="nx">type</span>  <span class="k">if</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">emulateJSON</span>
+      <span class="nv">params.type = </span><span class="s">&quot;POST&quot;</span>
+      <span class="nv">params.beforeSend = </span><span class="nf">(xhr) -&gt;</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span> <span class="s">&quot;X-HTTP-Method-Override&quot;</span><span class="p">,</span> <span class="nx">type</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-21'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p><code>processData</code> shoudn&rsquo;t be false if we have <code>Backbone.emulateJSON</code> enabled</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">params.processData = </span><span class="kc">false</span>  <span class="k">if</span> <span class="nx">params</span><span class="p">.</span><span class="nx">type</span> <span class="o">isnt</span> <span class="s">&quot;GET&quot;</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">emulateJSON</span>
+  <span class="nv">combined = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
+        </div>
+        <p>We use <code>$.jsonp</code> instead of <code>$.ajax</code> due to it&rsquo;s improved <code>JSONP</code> error handling</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">jsonp</span> <span class="nx">combined</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-23'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-23">&#182;</a>
+        </div>
+        <p>Utility for resolving <code>method</code> to <code>HTTP</code> verbs</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">methodMap =</span>
+  <span class="s">&#39;create&#39;</span><span class="o">:</span> <span class="s">&#39;POST&#39;</span>
+  <span class="s">&#39;update&#39;</span><span class="o">:</span> <span class="s">&#39;PUT&#39;</span>
+  <span class="s">&#39;delete&#39;</span><span class="o">:</span> <span class="s">&#39;DELETE&#39;</span>
+  <span class="s">&#39;read&#39;</span>  <span class="o">:</span> <span class="s">&#39;GET&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-24'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-24">&#182;</a>
+        </div>
+        <p>Utility for retrieving any <code>Backbone</code> object property either as a method or an attribute</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">getValue = </span><span class="nf">(object, prop) -&gt;</span>
+  <span class="k">return</span> <span class="kc">null</span>  <span class="nx">unless</span> <span class="nx">object</span> <span class="o">and</span> <span class="nx">object</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span>
+  <span class="p">(</span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">object</span><span class="p">[</span><span class="nx">prop</span><span class="p">])</span> <span class="k">then</span> <span class="nx">object</span><span class="p">[</span><span class="nx">prop</span><span class="p">]()</span> <span class="k">else</span> <span class="nx">object</span><span class="p">[</span><span class="nx">prop</span><span class="p">])</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-25'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-25">&#182;</a>
+        </div>
+        <p>Utility for throwing an <code>Error</code> if no <code>URL</code> is specified</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">urlError = </span><span class="o">-&gt;</span>
+  <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s">&quot;A &#39;url&#39; property or function must be specified&quot;</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Workflows_Stub'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Workflows_Stub">&#182;</a>
+        </div>
+        <h2>Workflows Stub</h2>
+
+<p>Stubbed <code>/appdata</code> so we don&rsquo;t have to wait for the load</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nv">MM.Sync.StubbedWorkflows = </span><span class="nf">(method, model, options) -&gt;</span>
+  <span class="nv">result = </span><span class="p">{</span>
+    <span class="s">&quot;workflow&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s">&quot;0&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;X&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;1&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;Did?&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Passed&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Done!&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Now&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Soon&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Later&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;Do?&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Pass&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Done!&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Now&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Soon&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Later&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;null&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Pass&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Done!&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Now&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Soon&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Later&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;Went?&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Yeah&quot;</span><span class="p">,</span>
+                <span class="s">&quot;st&quot;</span><span class="o">:</span> <span class="s">&quot;def&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">9</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Considered&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Nah&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;5&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;Went?&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Yeah&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">9</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Considered&quot;</span><span class="p">,</span>
+                <span class="s">&quot;st&quot;</span><span class="o">:</span> <span class="s">&quot;def&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Nah&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;6&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;RSVP&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Pass&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Maybe&quot;</span><span class="p">,</span>
+                <span class="s">&quot;st&quot;</span><span class="o">:</span> <span class="s">&quot;def&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Going&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;7&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;RSVP&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Yes&quot;</span><span class="p">,</span>
+                <span class="s">&quot;st&quot;</span><span class="o">:</span> <span class="s">&quot;def&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;No&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;8&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;RSVP&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Yes&quot;</span><span class="p">,</span>
+                <span class="s">&quot;st&quot;</span><span class="o">:</span> <span class="s">&quot;def&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;No&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="s">&quot;9&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s">&quot;null&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Pass&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Maybe&quot;</span><span class="p">,</span>
+                <span class="s">&quot;st&quot;</span><span class="o">:</span> <span class="s">&quot;def&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;Going&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s">&quot;fg&quot;</span><span class="o">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;(fail)&quot;</span>
+            <span class="p">}]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>entry.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="../models/concept.html">concept.coffee</a>
+          <a class="source" href="../models/entry.html">entry.coffee</a>
+          <a class="source" href="../models/session.html">session.coffee</a>
+          <a class="source" href="../models/sync.html">sync.coffee</a>
+          <a class="source" href="agenda.html">agenda.coffee</a>
+          <a class="source" href="awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="entry.html">entry.coffee</a>
+          <a class="source" href="landing.html">landing.coffee</a>
+          <a class="source" href="login.html">login.coffee</a>
+          <a class="source" href="meanxy.html">meanxy.coffee</a>
+          <a class="source" href="nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>entry.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span>
+<span class="nx">MM</span><span class="p">.</span><span class="nx">Views</span> <span class="o">||=</span> <span class="p">{}</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Entry_Views'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Entry_Views">&#182;</a>
+        </div>
+        <h1>Entry Views</h1>
+
+<h1>A collection of <code>Entries</code></h1>
+
+<h1>shown in the Agenda view</h1>
+
+<p>class MM.Views.Entries extends Backbone.View
+  className: &lsquo;entries&rsquo;
+  template: _.template(&ldquo;)</p>
+
+<p># When <code>Entries</code> are <code>reset</code> as an entire collection, we want them to append to the bottom. But when the user adds individual <code>Entries</code> with <code>Entries#create</code>, we want them to be prepended to the top
+  add: (entry, append = false) =&gt;
+    view = new MM.Views.Entry model: entry
+    if append
+      @$el.append view.render().el
+    else
+      @$el.prepend view.render().el</p>
+
+<p>reset: =&gt;
+    console.log @, &lsquo;#reset&rsquo;, @collection
+    @render()
+    @add(entry, append: true) for entry in @collection.models</p>
+
+<p>render: =&gt;
+    @$el.html @template()
+    @</p>
+
+<p>initialize: &ndash;&gt;
+    @collection.on &lsquo;reset&rsquo;, @reset 
+    @collection.on &lsquo;add&rsquo;, @add</p>
+
+<h1>Most common entry view</h1>
+
+<h1>shows the fuzz</h1>
+
+<p>class MM.Views.Entry extends Backbone.View
+  template: _.template(&lsquo;<span class="fuzz">&lt;%= fuzz %&gt;</span>&rsquo;)
+  className: &lsquo;entry&rsquo;</p>
+
+<p>events:
+    &lsquo;click&rsquo;: &lsquo;editOrDestroy&rsquo;</p>
+
+<p>editOrDestroy: (e) =&gt;
+    console.log @, &lsquo;#editOrDestroy&rsquo;, @model, e
+    e.preventDefault()
+    if e.shiftKey
+      @destroy()
+    else
+      # @edit</p>
+
+<p>destroy: &ndash;&gt;
+    @model.destroy()
+    @$el.remove()</p>
+
+<p>render: =&gt;
+    @$el.html @template @model.toJSON()
+    @</p>
+
+<p>class MM.Views.URLEntry extends MM.Views.Entry
+  template: _.template(&lsquo;<a href="<%= url %>&rdquo;&gt;</a>&rsquo;)</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

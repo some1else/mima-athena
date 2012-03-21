@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>workflows.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="concepts.html">concepts.coffee</a>
+          <a class="source" href="entries.html">entries.coffee</a>
+          <a class="source" href="session.html">session.coffee</a>
+          <a class="source" href="syncs.html">syncs.coffee</a>
+          <a class="source" href="workflows.html">workflows.coffee</a>
+          <a class="source" href="../views/agenda.html">agenda.coffee</a>
+          <a class="source" href="../views/awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="../views/entries.html">entries.coffee</a>
+          <a class="source" href="../views/landing.html">landing.coffee</a>
+          <a class="source" href="../views/login.html">login.coffee</a>
+          <a class="source" href="../views/meanxy.html">meanxy.coffee</a>
+          <a class="source" href="../views/nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>workflows.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-Workflows'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Workflows">&#182;</a>
+        </div>
+        <h1>Workflows</h1>
+
+<p><code>Workflow</code> holds possible states an <code>Entry</code> could be in</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Workflow</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span>
+  <span class="nv">default:</span>
+    <span class="nv">id: </span><span class="s">&#39;&#39;</span>
+    <span class="nv">label: </span><span class="s">&#39;&#39;</span>
+
+  <span class="nv">parse: </span><span class="nf">(values) -&gt;</span>
+    <span class="nx">values</span>
+
+  <span class="nv">buildStates: </span><span class="o">-&gt;</span>
+    <span class="vi">@states = </span><span class="p">[]</span>
+    <span class="k">for</span> <span class="nx">state</span> <span class="k">in</span> <span class="nx">@get</span><span class="p">(</span><span class="s">&#39;states&#39;</span><span class="p">)</span>
+      <span class="nx">@states</span><span class="p">.</span><span class="nx">push</span> <span class="k">new</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">WorkflowState</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span>
+  <span class="nv">initialize: </span><span class="o">-&gt;</span>
+    <span class="nx">@buildStates</span><span class="p">()</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#init&#39;</span><span class="p">,</span> <span class="nx">@get</span><span class="p">(</span><span class="s">&#39;label&#39;</span><span class="p">)</span>
+
+<span class="nx">MM</span><span class="p">.</span><span class="nx">Workflows</span> <span class="o">||=</span> <span class="p">{}</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Workflows</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span>
+  <span class="nv">model: </span><span class="nx">MM</span><span class="p">.</span><span class="nx">Workflow</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Intended to work with <code>MM.Sync.Workflows</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">sync: </span><span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">StubbedWorkflows</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>The <code>response</code> is structured in a peculiar way (<code>id</code> values as primary keys)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">parse: </span><span class="nf">(response) -&gt;</span>
+    <span class="nv">results = </span><span class="p">[]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>If we recieved an <code>Workflows</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">workflow</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>we iterate through the object values, representing individual workflows</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">for</span> <span class="nx">key_id</span><span class="p">,</span> <span class="nx">value_workflow</span> <span class="k">of</span> <span class="nx">response</span><span class="p">.</span><span class="nx">workflow</span> <span class="k">when</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">value_workflow</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>and we assemble the <code>Workflow</code> value object from various <code>JSON</code> leaves</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="nv">workflow = </span><span class="p">{}</span>
+        <span class="nv">workflow.id = </span><span class="nx">key_id</span>
+        <span class="nv">workflow.label = </span><span class="s">&#39;uninitialized&#39;</span>
+        <span class="nv">workflow.states = </span><span class="p">[]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>The first key holds the <code>label</code> of a <code>Workflow</code> and the value is an array of its <code>WorkflowStates</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="k">for</span> <span class="nx">key_workflowLabel</span><span class="p">,</span> <span class="nx">value_states</span> <span class="k">of</span> <span class="nx">value_workflow</span> <span class="k">when</span> <span class="nx">workflow</span><span class="p">.</span><span class="nx">label</span> <span class="o">is</span> <span class="s">&#39;uninitialized&#39;</span>
+          <span class="nv">workflow.label = </span><span class="nx">key_workflowLabel</span>
+          <span class="nv">workflow.states = </span><span class="nx">value_states</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>Append the assembled workflow</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="nx">results</span><span class="p">.</span><span class="nx">push</span> <span class="nx">workflow</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#parse&#39;</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">results</span>
+
+    <span class="nx">results</span>
+
+  <span class="nv">url: </span><span class="o">-&gt;</span>
+    <span class="nv">base = </span><span class="nx">MM</span><span class="p">.</span><span class="nx">Sync</span><span class="p">.</span><span class="nx">URL</span>
+    <span class="nv">login = </span><span class="nx">MM</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;account&#39;</span><span class="p">)</span>
+
+    <span class="s">&quot;</span><span class="si">#{</span><span class="nx">base</span><span class="si">}</span><span class="s">/appdata/</span><span class="si">#{</span><span class="nx">login</span><span class="si">}</span><span class="s">&quot;</span>
+  
+
+  <span class="nv">initialize: </span><span class="o">-&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#init&#39;</span><span class="p">,</span> <span class="s">&#39;LOL&#39;</span>
+
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">WorkflowState</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span>
+  <span class="nv">defaults:</span>
+    <span class="nv">fg_id: </span><span class="s">&#39;&#39;</span>
+    <span class="nv">label: </span><span class="s">&#39;&#39;</span>
+  <span class="nv">parse: </span><span class="nf">(values) -&gt;</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nv">fg_id: </span><span class="nx">values</span><span class="p">.</span><span class="nx">fg</span>
+      <span class="nv">label: </span><span class="nx">values</span><span class="p">.</span><span class="nx">name</span>
+    <span class="p">}</span>
+  <span class="nv">initialize: </span><span class="nf">(state) -&gt;</span>
+    <span class="nx">@clear</span><span class="p">()</span>
+    <span class="nx">@set</span><span class="p">(</span><span class="nx">@parse</span><span class="p">(</span><span class="nx">state</span><span class="p">))</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;#init&#39;</span><span class="p">,</span> <span class="nx">@get</span><span class="p">(</span><span class="s">&#39;label&#39;</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

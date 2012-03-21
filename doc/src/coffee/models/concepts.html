@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>concepts.coffee</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../app.html">app.coffee</a>
+          <a class="source" href="../meanxy/_legacy.html">_legacy.coffee</a>
+          <a class="source" href="../meanxy/_legacy_config.html">_legacy_config.coffee</a>
+          <a class="source" href="../meanxy/breadcrumb.html">breadcrumb.coffee</a>
+          <a class="source" href="../meanxy/query.html">query.coffee</a>
+          <a class="source" href="../meanxy/tile.html">tile.coffee</a>
+          <a class="source" href="concepts.html">concepts.coffee</a>
+          <a class="source" href="entries.html">entries.coffee</a>
+          <a class="source" href="session.html">session.coffee</a>
+          <a class="source" href="syncs.html">syncs.coffee</a>
+          <a class="source" href="workflows.html">workflows.coffee</a>
+          <a class="source" href="../views/agenda.html">agenda.coffee</a>
+          <a class="source" href="../views/awsmbar.html">awsmbar.coffee</a>
+          <a class="source" href="../views/entries.html">entries.coffee</a>
+          <a class="source" href="../views/landing.html">landing.coffee</a>
+          <a class="source" href="../views/login.html">login.coffee</a>
+          <a class="source" href="../views/meanxy.html">meanxy.coffee</a>
+          <a class="source" href="../views/nav.html">nav.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>concepts.coffee</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-Concept'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Concept">&#182;</a>
+        </div>
+        <h1>Concept</h1>
+
+<p><code>Concept</code> is the root entity in <em>middlemachine</em>. It&rsquo;s extended to <code>Person</code>, <code>Tag</code>, <code>Place</code> and <code>Time</code> constructs.
+It&rsquo;s also used to express an <code>Entry</code>&rsquo;s relations <code>RelevantConcepts</code> and <code>SuggestedConcepts</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nx">MM</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">MM</span> <span class="o">||=</span> <span class="p">{}</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Concept</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span>
+  <span class="nv">defaults:</span>
+    <span class="nv">content: </span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nv">kind: </span><span class="s">&quot;&quot;</span>
+    <span class="nv">weight: </span><span class="mi">0</span><span class="p">,</span> <span class="nv">shade: </span><span class="mi">0</span>
+    <span class="nv">x: </span><span class="kc">false</span><span class="p">,</span> <span class="nv">y: </span><span class="kc">false</span>
+    <span class="nv">query: </span><span class="kc">false</span><span class="p">,</span> <span class="nv">prompt: </span><span class="kc">false</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>We parse the <code>Concept</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">parse: </span><span class="nf">(values) -&gt;</span>
+
+    <span class="nv">result = </span><span class="p">{}</span>
+
+    <span class="nv">typ = </span><span class="nx">values</span><span class="p">.</span><span class="nx">type</span>
+    <span class="nv">i = </span><span class="nx">typ</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  
+    <span class="k">if</span> <span class="nx">i</span> <span class="o">&gt;</span> <span class="mi">0</span>
+      <span class="nv">result.query = </span><span class="kc">true</span>  <span class="k">if</span> <span class="nx">typ</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&quot;query&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+      <span class="nv">result.prompt = </span><span class="kc">true</span>  <span class="k">if</span> <span class="nx">typ</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&quot;prompt&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+      <span class="nv">typ = </span><span class="nx">typ</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+  
+    <span class="k">switch</span> <span class="nx">typ</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()</span>
+      <span class="k">when</span> <span class="s">&quot;TAG&quot;</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;tag&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;PERSON&quot;</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;person&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;DELEGATE_IN&quot;</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;delegate_in&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;DELEGATE_OUT&quot;</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;delegate_out&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;PLACE&quot;</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;place&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;TIME&quot;</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;time&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;KNOT&quot;</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;knot&quot;</span>
+      <span class="k">else</span>
+        <span class="nv">result.kind = </span><span class="s">&quot;tile&quot;</span>
+
+    <span class="nv">result.content = </span><span class="nx">values</span><span class="p">.</span><span class="nx">label</span>
+
+    <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">values</span><span class="p">.</span><span class="nx">w</span><span class="p">)</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span><span class="nx">values</span><span class="p">.</span><span class="nx">w</span><span class="p">)</span>
+      <span class="nv">result.weight = </span><span class="nx">values</span><span class="p">.</span><span class="nx">w</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="nx">result</span><span class="p">.</span><span class="nx">kind</span> <span class="o">is</span> <span class="s">&quot;knot&quot;</span>
+      <span class="nv">result.weight = </span><span class="o">-</span><span class="kc">Infinity</span>
+    <span class="k">else</span>
+      <span class="nv">result.weight = </span><span class="mi">0</span>
+
+    <span class="nx">result</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>When we add the <code>Concept</code> to <code>Entry.fuzz</code> or a <code>MeanXY</code> <code>Query</code>, we turn it to string with it&rsquo;s fuzztle prefix</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="nv">toString: </span><span class="o">-&gt;</span>
+    <span class="nv">res = </span><span class="s">&quot;&quot;</span>
+    <span class="k">switch</span> <span class="nx">@get</span><span class="p">(</span><span class="s">&quot;kind&quot;</span><span class="p">).</span><span class="nx">toUpperCase</span><span class="p">()</span>
+      <span class="k">when</span> <span class="s">&quot;PERSON&quot;</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="s">&quot;+&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;TAG&quot;</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="err">#</span><span class="s">&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;PLACE&quot;</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="s">&quot;@&quot;</span>
+      <span class="k">when</span> <span class="s">&quot;TIME&quot;</span>
+        <span class="nx">res</span> <span class="o">+=</span> <span class="s">&quot;~&quot;</span>
+    <span class="nx">res</span> <span class="o">+=</span> <span class="nx">@get</span><span class="p">(</span><span class="s">&quot;content&quot;</span><span class="p">)</span>
+    <span class="nx">res</span>
+
+<span class="k">class</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Person</span> <span class="k">extends</span> <span class="nx">MM</span><span class="p">.</span><span class="nx">Concept</span>
+  <span class="nv">defaults:</span>
+    <span class="nv">name: </span><span class="s">&quot;John Doe&quot;</span>
+    <span class="nv">kind: </span><span class="s">&quot;person&quot;</span>
+    <span class="nv">score:</span>
+      <span class="nv">weight: </span><span class="mi">0</span>
+      <span class="nv">shade: </span><span class="mi">0</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
